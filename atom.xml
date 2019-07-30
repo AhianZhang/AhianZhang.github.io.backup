@@ -1,0 +1,780 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>象帝浮华生</title>
+  <subtitle>总要有一个地方来沉淀自己。</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://ahianzhang.com/"/>
+  <updated>2019-07-07T06:12:56.249Z</updated>
+  <id>https://ahianzhang.com/</id>
+  
+  <author>
+    <name>Ahian Zhang</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>tf-idf 算法</title>
+    <link href="https://ahianzhang.com/2019/07/03/tf-idf/"/>
+    <id>https://ahianzhang.com/2019/07/03/tf-idf/</id>
+    <published>2019-07-03T00:54:36.000Z</published>
+    <updated>2019-07-07T06:12:56.249Z</updated>
+    
+    <content type="html"><![CDATA[<p>tf-idf (term frequence-inverse document frequence) 词频-逆文档频率，是搜索常用的一个权重相关算法，其作用是评估一个 document 在一整个 document list 中的重要程度，下面分开来讲。</p>
+<h2 id="term-frequence"><a href="#term-frequence" class="headerlink" title="term frequence"></a>term frequence</h2><p>tf 的意思就是一个词语在一个文件中出现的次数，对于一篇文章， tf 算法会将这篇文章进行分词并统计出现次数。这个词在这篇文章中出现的次数越多则说明越不重要，权重则越低。</p>
+<h2 id="inverse-document-frequence"><a href="#inverse-document-frequence" class="headerlink" title="inverse document frequence"></a>inverse document frequence</h2>]]></content>
+    
+    <summary type="html">
+    
+      tf-idf 算法的相关内容
+    
+    </summary>
+    
+      <category term="搜索" scheme="https://ahianzhang.com/categories/%E6%90%9C%E7%B4%A2/"/>
+    
+    
+      <category term="算法" scheme="https://ahianzhang.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>gitlab 添加代码规范检测</title>
+    <link href="https://ahianzhang.com/2019/06/19/code-style-check-ali-p3c/"/>
+    <id>https://ahianzhang.com/2019/06/19/code-style-check-ali-p3c/</id>
+    <published>2019-06-19T03:00:46.000Z</published>
+    <updated>2019-07-30T03:54:04.025Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><p>gitlab 10.5.X + gitlab + ali p3c.pmd</p>
+<p>好的代码能让人赏心悦目，方便 CodeReview 进行，为此，必须强制性的将代码规范起来。</p>
+<h1 id="如何做"><a href="#如何做" class="headerlink" title="如何做"></a>如何做</h1><h2 id="git-custom-hooks"><a href="#git-custom-hooks" class="headerlink" title="git custom hooks"></a>git custom hooks</h2><h3 id="client-hooks"><a href="#client-hooks" class="headerlink" title="client hooks"></a>client hooks</h3><p>客户端钩子是存在本地的，按项目去配，这样能达到目的，但是起不到强制约束的效果，而且一个一个配很麻烦</p>
+<h3 id="server-hooks"><a href="#server-hooks" class="headerlink" title="server hooks"></a>server hooks</h3><p>服务器端的钩子，每个项目中的 git hooks 全都是软连接到 gitlab  上的一个位置，默认是在</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/opt/gitlab/embedded/service/gitlab-shell/hooks</span><br></pre></td></tr></table></figure>
+<p>这个 hooks 文件夹内包括三个文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── post-receive</span><br><span class="line">├── pre-receive</span><br><span class="line">└── update</span><br></pre></td></tr></table></figure>
+<ul>
+<li>pre-receive 接收客户端推送的代码，这个脚本的功能是最后只有 exit 0 时才代表接收，所有非 0 的推送都会被拒绝</li>
+<li>update 可以多分支的去检测，即一段代码推送到多个分支，每个分支更新代码前都会执行一次这个脚本</li>
+<li>post-receive 这个脚本是最后执行的，主要用来记录信息及通知用，不能中断推送流程</li>
+</ul>
+<p>按实际需求，使用 pre-receive 脚本就能满足要求，修改脚本为如下内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="built_in">export</span> LANG=<span class="string">"en_US.UTF-8"</span></span><br><span class="line">REJECT=0</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> oldrev newrev refname; <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">if</span> [ <span class="string">"<span class="variable">$oldrev</span>"</span> = <span class="string">"0000000000000000000000000000000000000000"</span> ];<span class="keyword">then</span></span><br><span class="line">        oldrev=<span class="string">"<span class="variable">$&#123;newrev&#125;</span>^"</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">    files=`git diff --name-only <span class="variable">$&#123;oldrev&#125;</span> <span class="variable">$&#123;newrev&#125;</span>  | grep <span class="_">-e</span> <span class="string">"\.java$"</span>`</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> [ -n <span class="string">"<span class="variable">$files</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">        TEMPDIR=<span class="string">"tmp"</span></span><br><span class="line">        <span class="keyword">for</span> file <span class="keyword">in</span> <span class="variable">$&#123;files&#125;</span>; <span class="keyword">do</span></span><br><span class="line">            mkdir -p <span class="string">"<span class="variable">$&#123;TEMPDIR&#125;</span>/`dirname <span class="variable">$&#123;file&#125;</span>`"</span> &gt;/dev/null</span><br><span class="line">            git show <span class="variable">$newrev</span>:<span class="variable">$file</span> &gt; <span class="variable">$&#123;TEMPDIR&#125;</span>/<span class="variable">$&#123;file&#125;</span></span><br><span class="line">        <span class="keyword">done</span>;</span><br><span class="line"></span><br><span class="line">        files_to_check=`find <span class="variable">$TEMPDIR</span> -name <span class="string">'*.java'</span>`</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">         /home/jdk1.8.0_212/bin/java -cp /home/p3c-pmd-1.3.6.jar net.sourceforge.pmd.PMD <span class="_">-d</span> <span class="variable">$TEMPDIR</span> -R rulesets/java/ali-comment.xml,rulesets/java/ali-concurrent.xml,rulesets/java/ali-constant.xml,rulesets/java/ali-exception.xml,rulesets/java/ali-flowcontrol.xml,rulesets/java/ali-naming.xml,rulesets/java/ali-oop.xml,rulesets/java/ali-orm.xml,rulesets/java/ali-other.xml,rulesets/java/ali-set.xml <span class="_">-f</span> text</span><br><span class="line">       </span><br><span class="line">         REJECT=$?</span><br><span class="line">         </span><br><span class="line">         </span><br><span class="line">          <span class="keyword">if</span> [[ <span class="variable">$REJECT</span> == 0 ]] ;<span class="keyword">then</span></span><br><span class="line">            <span class="built_in">echo</span> <span class="_">-e</span> <span class="string">"\033[32m恭喜你代码通过质量检测！\033[0m"</span></span><br><span class="line">             <span class="keyword">else</span> <span class="built_in">echo</span> <span class="_">-e</span> <span class="string">"\033[31m\033[01m 请及时修改代码并再次尝试\033[0m"</span> </span><br><span class="line">          <span class="keyword">fi</span></span><br><span class="line">     </span><br><span class="line">        rm -rf <span class="variable">$TEMPDIR</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exit</span> <span class="variable">$REJECT</span></span><br></pre></td></tr></table></figure>
+<p>上面代码是根据简书上的一个 blog 做了微调，如果你要用的话只需要修改 java 路径和 p3c.jar 的路径，这个脚本接受的是标准输入流，具体可以查看下方链接。</p>
+<p>参考链接：</p>
+<p><a href="https://www.jianshu.com/p/b87ca8615c9c" target="_blank" rel="noopener">如何生成整合了阿里巴巴JAVA编码规范的PMD包配合GitLab提升团队代码质量</a></p>
+<p><a href="https://www.jianshu.com/p/5531a21afa68" target="_blank" rel="noopener">Gitlab 服务器端 custom hook 配置</a></p>
+<p><a href="[https://git-scm.com/book/zh/v2/%E8%87%AA%E5%AE%9A%E4%B9%89-Git-Git-%E9%92%A9%E5%AD%90](https://git-scm.com/book/zh/v2/自定义-Git-Git-钩子">自定义 Git - Git 钩子</a>)</p>
+<p><a href="https://gitirc.eu/githooks.html" target="_blank" rel="noopener">githooks(5) Manual Page</a></p>
+<p><a href="https://www.jianshu.com/p/de90ffbd53e9" target="_blank" rel="noopener">使用git钩子对提交代码进行检查(pre-commit)</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      在推代码规范的路上一定要独裁
+    
+    </summary>
+    
+      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>query 改写</title>
+    <link href="https://ahianzhang.com/2019/06/18/query-rewrite/"/>
+    <id>https://ahianzhang.com/2019/06/18/query-rewrite/</id>
+    <published>2019-06-18T07:36:03.000Z</published>
+    <updated>2019-06-19T07:05:14.117Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="什么是-query-改写"><a href="#什么是-query-改写" class="headerlink" title="什么是 query 改写"></a>什么是 query 改写</h1><p>query 改写是搜索系统中最基础也是最重要的一个模块，简单来讲就是把用户输入的 keyword 转换成最贴近搜索系统内部的可识别的 keyword。</p>
+<p>搜索引擎检索 keyword 的时候主要是匹配和排序，匹配也常常被称作“召回”，在搜索和推荐领域会有一个“召回率”的指标，在此不做展开。query 改写则会直接影响召回的指标</p>
+<p>query 改写可以分成几个大的功能：纠错（ERROR Correction）、意图改写、记录 keyword</p>
+<p>举个电商行业的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">用户搜索关键字: 男士鞋</span><br><span class="line"></span><br><span class="line">倒排索引：</span><br><span class="line"> doc1: 男士鞋白色百搭</span><br><span class="line"> doc2: 男鞋红色运动型</span><br><span class="line"> doc3: 鞋子蓝色透气舒适</span><br><span class="line"> doc4: 女生跑步鞋</span><br></pre></td></tr></table></figure>
+<p>如果不进行 query 改写那么它就会返回在索引中与 “男士鞋” 完全匹配的文档，此时只有 doc1 能够被召回，此时显然不是我们想要的，如果 改写 query 会是什么样的？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">男士鞋 -&gt; 男|男士|鞋</span><br></pre></td></tr></table></figure>
+<p>将 keyword 按一定的逻辑进行拆分，然后推测用户想要搜什么，也就是拆分后的字或者词哪个是重要的。这样就能返回 doc1 和 doc2 以及可能会返回 doc3 ，这就有一定的概率性，牺牲一定的准确度来获得更多商品的召回。</p>
+<h1 id="怎么去做-query-改写"><a href="#怎么去做-query-改写" class="headerlink" title="怎么去做 query 改写"></a>怎么去做 query 改写</h1><ul>
+<li>n-gram （N 元语法模型）</li>
+<li>知识图谱</li>
+<li>协同过滤</li>
+</ul>
+<p>​    <strong>n</strong>-<strong>gram</strong></p>
+]]></content>
+    
+    <summary type="html">
+    
+      叙述自己目前对 query 改写的一些认知
+    
+    </summary>
+    
+      <category term="搜索" scheme="https://ahianzhang.com/categories/%E6%90%9C%E7%B4%A2/"/>
+    
+    
+      <category term="理论" scheme="https://ahianzhang.com/tags/%E7%90%86%E8%AE%BA/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>阶段性总结</title>
+    <link href="https://ahianzhang.com/2019/06/18/summary10/"/>
+    <id>https://ahianzhang.com/2019/06/18/summary10/</id>
+    <published>2019-06-18T02:48:19.000Z</published>
+    <updated>2019-06-18T07:36:06.957Z</updated>
+    
+    <content type="html"><![CDATA[<p>博客断断续续的在更着，总是想写总是找不到合适的时间。</p>
+<h1 id="做了那些事情"><a href="#做了那些事情" class="headerlink" title="做了那些事情"></a>做了那些事情</h1><h2 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h2><p>用 solr 将公司的搜索系统重构了一遍，但是感觉很有成就感，但现在看来真的很 low ，当然好的架构是简单高效的，但是对于搜索用 job 的方式去同步真的很 low ，而且性能很差。搜索是商品展示的关键，为什么要用 job 的方式去同步，这是领导决定的，不接受任何建议，我有心无力。这是一件憾事。</p>
+<h2 id="钉钉人员同步"><a href="#钉钉人员同步" class="headerlink" title="钉钉人员同步"></a>钉钉人员同步</h2><p> 我想吐槽一下钉钉的官网文档，很难理清顺序，最初还是问的钉钉客服才知道应该看哪一个，为什么要用钉钉人员数据，因为对于人员变动钉钉是及时更新的，而公司内部系统想做成统一的平台，统一用户、统一权限、统一风格。前端用 Antd ，后端 springboot 。思想是好的，但实施起来真的很困难。固有思想很难变化。</p>
+<h2 id="搜索的理论知识"><a href="#搜索的理论知识" class="headerlink" title="搜索的理论知识"></a>搜索的理论知识</h2><p>做搜索让我找到了兴趣点，搜索其实是理论依据很高的一个领域，信息检索、数学等都需要储备。</p>
+<p>推荐几本有关搜索方面值得一读的书(从前到后，由浅入深，由实战到理论)</p>
+<p>《深入</p>
+<p>《Lucene ElasticSearch 检索实战》</p>
+<p>《这就是搜索引擎：核心技术详解》</p>
+<p>《信息检索导论》</p>
+<h1 id="未来计划"><a href="#未来计划" class="headerlink" title="未来计划"></a>未来计划</h1><p>到八一参加工作就满一年了，可能会出去再历练历练，找一份搜索相关的工作。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      讲讲我这段时间干了啥，以后的计划
+    
+    </summary>
+    
+      <category term="总结" scheme="https://ahianzhang.com/categories/%E6%80%BB%E7%BB%93/"/>
+    
+    
+      <category term="工作总结" scheme="https://ahianzhang.com/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>操作系统作用</title>
+    <link href="https://ahianzhang.com/2019/06/01/os1/"/>
+    <id>https://ahianzhang.com/2019/06/01/os1/</id>
+    <published>2019-06-01T14:36:59.000Z</published>
+    <updated>2019-07-30T03:54:42.294Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="操作系统作用"><a href="#操作系统作用" class="headerlink" title="操作系统作用"></a>操作系统作用</h1><h2 id="1、资源管理者"><a href="#1、资源管理者" class="headerlink" title="1、资源管理者"></a>1、资源管理者</h2><h3 id="都能管理什么？"><a href="#都能管理什么？" class="headerlink" title="都能管理什么？"></a>都能管理什么？</h3><h4 id="自底向上"><a href="#自底向上" class="headerlink" title="自底向上"></a>自底向上</h4><p>对于操作系统内部来讲</p>
+<h4 id="硬件资源"><a href="#硬件资源" class="headerlink" title="硬件资源"></a>硬件资源</h4><p>像 CPU 、内存、设备（输入输出设备、磁盘、时钟、网卡）</p>
+<h4 id="软件资源"><a href="#软件资源" class="headerlink" title="软件资源"></a>软件资源</h4><p>磁盘上的文件，各类管理信息</p>
+<h3 id="如何管理"><a href="#如何管理" class="headerlink" title="如何管理"></a>如何管理</h3><ul>
+<li>跟踪记录资源的使用情况</li>
+<li>确定资源的分配策略</li>
+<li>实施资源的分配与回收</li>
+<li>提高资源利用率</li>
+<li>保护资源的使用</li>
+<li>协调多个进程对资源的请求</li>
+</ul>
+<h3 id="从资源管理的角度总结出的-OS-五大特征"><a href="#从资源管理的角度总结出的-OS-五大特征" class="headerlink" title="从资源管理的角度总结出的 OS 五大特征"></a>从资源管理的角度总结出的 OS 五大特征</h3><h4 id="进程-线程-管理（CPU-管理）"><a href="#进程-线程-管理（CPU-管理）" class="headerlink" title="进程/线程 管理（CPU 管理）"></a>进程/线程 管理（CPU 管理）</h4><p>进程线程状态，控制、同步、互斥、通信调度</p>
+<h4 id="存储管理"><a href="#存储管理" class="headerlink" title="存储管理"></a>存储管理</h4><p>分配和回收、地址转换、存储保护、内存扩充</p>
+<h4 id="文件管理"><a href="#文件管理" class="headerlink" title="文件管理"></a>文件管理</h4><p>文件目录、文件操作、磁盘空间、文件存取控制</p>
+<h4 id="设备管理"><a href="#设备管理" class="headerlink" title="设备管理"></a>设备管理</h4><p>设备驱动、分配回收、缓冲技术</p>
+<h4 id="用户接口"><a href="#用户接口" class="headerlink" title="用户接口"></a>用户接口</h4><p>系统命令、编程接口</p>
+<h2 id="2、系统资源的提供者"><a href="#2、系统资源的提供者" class="headerlink" title="2、系统资源的提供者"></a>2、系统资源的提供者</h2><h3 id="从用户的角度看"><a href="#从用户的角度看" class="headerlink" title="从用户的角度看"></a>从用户的角度看</h3><p>操作系统为用户提供了功能强大且方便易用的命令或者系统调用</p>
+<h3 id="典型的服务"><a href="#典型的服务" class="headerlink" title="典型的服务"></a>典型的服务</h3><ul>
+<li>进程创建、执行</li>
+<li>文件和目录操作</li>
+<li>输入输出设备的使用</li>
+<li>各类统计信息</li>
+</ul>
+<h2 id="3、对计算机硬件的扩展"><a href="#3、对计算机硬件的扩展" class="headerlink" title="3、对计算机硬件的扩展"></a>3、对计算机硬件的扩展</h2><p>操作系统在应用程序与计算机硬件之间建立了一个等价的扩展机器（虚拟机）</p>
+<p>对硬件的抽象，提供了可移植性，比底层更容易编程</p>
+]]></content>
+    
+    <summary type="html">
+    
+      概览操作系统的作用
+    
+    </summary>
+    
+      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
+    
+    
+      <category term="os" scheme="https://ahianzhang.com/tags/os/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>leetcode206</title>
+    <link href="https://ahianzhang.com/2019/05/30/leetcode206/"/>
+    <id>https://ahianzhang.com/2019/05/30/leetcode206/</id>
+    <published>2019-05-30T01:43:49.000Z</published>
+    <updated>2019-05-30T03:57:16.025Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/Paper.Paper%20%E5%B7%A5%E5%85%B7.21.PNG?Expires=1559184132&amp;OSSAccessKeyId=TMP.AgFLVFCYpRjvpgIdC-LDRRj6JCUB1ibliK1ycCCtj7Nt9NMwsKoKWH9us7X_ADAtAhUAjHGJ_qlet9_nYP6iuQwqaskaZSgCFDTWqINtPo0YNfeemaYTBQbbaJCk&amp;Signature=G1UP5FAmXgyC45XdQ3xOU6DuY%2B8%3D" alt></p>
+<p><strong>Consideration</strong> </p>
+<ul>
+<li>make three pointers , pre,current,next;</li>
+<li>initial pre as null</li>
+<li>use tmp to save current’s next node info</li>
+<li>change current’s next to link pre node(first is null)</li>
+<li>move pre pointer to next node</li>
+<li>move current pointer to next node</li>
+</ul>
+<p><strong>soultion</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * public class ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) &#123; val = x; &#125;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ListNode <span class="title">reverseList</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">     ListNode pre = <span class="keyword">null</span>;</span><br><span class="line">        ListNode current = head;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (current != <span class="keyword">null</span>)&#123;</span><br><span class="line"></span><br><span class="line">            ListNode next = current.next;</span><br><span class="line">            current.next = pre;</span><br><span class="line">            pre = current;</span><br><span class="line">            current = next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pre;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      单链表反转，借助三个指针操作
+    
+    </summary>
+    
+      <category term="算法" scheme="https://ahianzhang.com/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="LeetCode" scheme="https://ahianzhang.com/tags/LeetCode/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>hamming-distance</title>
+    <link href="https://ahianzhang.com/2019/05/28/leetcode461/"/>
+    <id>https://ahianzhang.com/2019/05/28/leetcode461/</id>
+    <published>2019-05-28T03:18:18.000Z</published>
+    <updated>2019-05-28T03:47:18.833Z</updated>
+    
+    <content type="html"><![CDATA[<p>The <strong>Hamming distance</strong> between two integers is the number of positions at which the corresponding bits are different.</p>
+<p>Given two integers <code>x</code> and <code>y</code>, calculate the Hamming distance.</p>
+<p><strong>Note:</strong><br>0 ≤ <code>x</code>, <code>y</code> &lt; 231.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Input: x = 1, y = 4</span><br><span class="line"></span><br><span class="line">Output: 2</span><br><span class="line"></span><br><span class="line">Explanation:</span><br><span class="line">1   (0 0 0 1)</span><br><span class="line">4   (0 1 0 0)</span><br><span class="line">       ↑   ↑</span><br><span class="line"></span><br><span class="line">The above arrows point to positions where the corresponding bits are different.</span><br></pre></td></tr></table></figure>
+<p><strong>Consideration</strong></p>
+<p>This problem is also have a relationship with ‘^’  , Think about it :</p>
+<p><strong><em>1(0001)</em></strong> and <strong><em>4(0100)</em></strong> their Xor is <strong><em>5(0101)</em></strong>  .  next we use <strong>&amp;</strong> Operator to calculate the number of <strong><em>1  ,</em></strong> let the binary &amp; 1 ,if result is 1 ,sum’s up , use <strong><em>&gt;&gt;</em></strong> to move the postion.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">5(0101)</span><br><span class="line">0&amp;1  = 0            pass</span><br><span class="line">01&amp;01 = 1           sum</span><br><span class="line">010&amp;001 = 0         pass</span><br><span class="line">0101&amp;0001 = 1       sum</span><br></pre></td></tr></table></figure>
+<p>so,the anwser is <strong><em>2</em></strong></p>
+<p><strong>Solution</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hammingDistance</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">	         </span><br><span class="line">         <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">         <span class="keyword">int</span> xor = x ^ y;</span><br><span class="line">	 </span><br><span class="line">	    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;<span class="number">32</span>;i++)&#123;</span><br><span class="line">	    	</span><br><span class="line">             sum+=(xor&gt;&gt;i)&amp;<span class="number">1</span>;</span><br><span class="line">	    &#125;</span><br><span class="line">	       </span><br><span class="line">		<span class="keyword">return</span> sum;</span><br><span class="line">	    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>tips: if you don’t understand the Xor ,you can see my<a href="http://younge.group/2018/07/08/136-single-number/" target="_blank" rel="noopener"> older article</a> which about Xor  .and the flowing is about <strong>Hamming Distance</strong> from wiki.</p>
+<p><a href="https://en.wikipedia.org/wiki/File:Hamming_distance_3_bit_binary.svg" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Hamming_distance_3_bit_binary.svg/140px-Hamming_distance_3_bit_binary.svg.png" alt="461. Hamming Distance"></a></p>
+<p>3-bit binary <a href="https://en.wikipedia.org/wiki/Cube" target="_blank" rel="noopener">cube</a> for finding Hamming distance</p>
+<p><a href="https://en.wikipedia.org/wiki/File:Hamming_distance_3_bit_binary_example.svg" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Hamming_distance_3_bit_binary_example.svg/140px-Hamming_distance_3_bit_binary_example.svg.png" alt="461. Hamming Distance"></a></p>
+<p>Two example distances: 100→011 has distance 3; 010→111 has distance 2</p>
+<p>The minimum distance between any two vertices is the Hamming distance between the two binary strings.</p>
+]]></content>
+    
+    <summary type="html">
+    
+      汉明码类的题，使用异或、与、移位进行操作
+    
+    </summary>
+    
+      <category term="算法" scheme="https://ahianzhang.com/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="LeetCode" scheme="https://ahianzhang.com/tags/LeetCode/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ElasticSearch API 基本操作</title>
+    <link href="https://ahianzhang.com/2019/05/27/elasticsearch03/"/>
+    <id>https://ahianzhang.com/2019/05/27/elasticsearch03/</id>
+    <published>2019-05-27T09:52:23.000Z</published>
+    <updated>2019-05-27T10:13:46.445Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="查看集群健康值"><a href="#查看集群健康值" class="headerlink" title="查看集群健康值"></a>查看集群健康值</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET _cat/health?v</span><br></pre></td></tr></table></figure>
+<h1 id="查看-node-信息"><a href="#查看-node-信息" class="headerlink" title="查看 node 信息"></a>查看 node 信息</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET _nodes</span><br></pre></td></tr></table></figure>
+<h1 id="查看索引信息"><a href="#查看索引信息" class="headerlink" title="查看索引信息"></a>查看索引信息</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET _cat/indices?v</span><br></pre></td></tr></table></figure>
+<h1 id="创建索引"><a href="#创建索引" class="headerlink" title="创建索引"></a>创建索引</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PUT /test?pretty</span><br></pre></td></tr></table></figure>
+<h1 id="删除索引"><a href="#删除索引" class="headerlink" title="删除索引"></a>删除索引</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE /test?pretty</span><br></pre></td></tr></table></figure>
+<h1 id="新建文档并建立索引"><a href="#新建文档并建立索引" class="headerlink" title="新建文档并建立索引"></a>新建文档并建立索引</h1><h2 id="创建一个index为-ecommerce-的索引"><a href="#创建一个index为-ecommerce-的索引" class="headerlink" title="创建一个index为 ecommerce 的索引"></a>创建一个index为 ecommerce 的索引</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">PUT /ecommerce/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;product_id&quot;:1234,</span><br><span class="line">  &quot;product_name&quot;: &quot;南极人&quot;,</span><br><span class="line">  &quot;price&quot;:99.9,</span><br><span class="line">  &quot;color&quot;:&quot;Red&quot;,</span><br><span class="line">  &quot;tags&quot;:[&quot;轻松&quot;,&quot;舒服&quot;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT /ecommerce/_doc/2</span><br><span class="line">&#123;</span><br><span class="line"> &quot;product_id&quot;:5678,</span><br><span class="line">  &quot;product_name&quot;: &quot;寓美&quot;,</span><br><span class="line">  &quot;price&quot;:199.9,</span><br><span class="line">  &quot;color&quot;:&quot;White&quot;,</span><br><span class="line">  &quot;tags&quot;:[&quot;透气&quot;,&quot;实惠&quot;]</span><br><span class="line">&#125;</span><br><span class="line">PUT /ecommerce/_doc/3</span><br><span class="line">&#123;</span><br><span class="line">  &quot;product_id&quot;:23333,</span><br><span class="line">  &quot;product_name&quot;: &quot;金利来&quot;,</span><br><span class="line">  &quot;price&quot;:1899.9,</span><br><span class="line">  &quot;color&quot;:&quot;Blue&quot;,</span><br><span class="line">  &quot;tags&quot;:[&quot;奢侈&quot;,&quot;豪华&quot;]</span><br><span class="line">&#125;</span><br><span class="line">PUT /ecommerce/_doc/4</span><br><span class="line">&#123;</span><br><span class="line">  &quot;product_id&quot;:4444,</span><br><span class="line">  &quot;product_name&quot;: &quot;南极人上衣&quot;,</span><br><span class="line">  &quot;price&quot;:19.9,</span><br><span class="line">  &quot;color&quot;:&quot;Yellow&quot;,</span><br><span class="line">  &quot;tags&quot;:[&quot;保暖&quot;,&quot;豪华&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="查询操作"><a href="#查询操作" class="headerlink" title="查询操作"></a>查询操作</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /ecommerce/_doc/1</span><br></pre></td></tr></table></figure>
+<h1 id="更新操作方式1"><a href="#更新操作方式1" class="headerlink" title="更新操作方式1"></a>更新操作方式1</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PUT /ecommerce/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;product_id&quot;:1234,</span><br><span class="line">  &quot;product_name&quot;:&quot;南极人裤子&quot;,</span><br><span class="line">  &quot;price&quot;:99.9,</span><br><span class="line">  &quot;color&quot;:&quot;Red&quot;,</span><br><span class="line">  &quot;tags&quot;:[&quot;保暖&quot;,&quot;舒服&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="更新操作方式2"><a href="#更新操作方式2" class="headerlink" title="更新操作方式2"></a>更新操作方式2</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">POST /ecommerce/_update/1</span><br><span class="line">&#123;</span><br><span class="line">  &quot;doc&quot;: &#123;</span><br><span class="line">    &quot;product_id&quot;: 1234</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="删除操作"><a href="#删除操作" class="headerlink" title="删除操作"></a>删除操作</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE /ecommerce/_doc/1</span><br></pre></td></tr></table></figure>
+<h1 id="DSL-查询"><a href="#DSL-查询" class="headerlink" title="DSL 查询"></a>DSL 查询</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">GET _search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match_all&quot;: &#123;&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;timeout&quot;: &quot;1ms&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="查询并按价格排序"><a href="#查询并按价格排序" class="headerlink" title="查询并按价格排序"></a>查询并按价格排序</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">GET /ecommerce/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match&quot;: &#123;</span><br><span class="line">      &quot;product_name&quot;: &quot;南极人&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;sort&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;price&quot;: &#123;</span><br><span class="line">        &quot;order&quot;: &quot;desc&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="指定返回的-field"><a href="#指定返回的-field" class="headerlink" title="指定返回的 field"></a>指定返回的 field</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">GET /ecommerce/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match_all&quot;: &#123;&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;_source&quot;:[&quot;product_id&quot;,&quot;product_name&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="分页查询-从-0-开始，每页一个"><a href="#分页查询-从-0-开始，每页一个" class="headerlink" title="分页查询 从 0 开始，每页一个"></a>分页查询 从 0 开始，每页一个</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">GET /ecommerce/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;&quot;match_all&quot;: &#123;&#125;&#125;,</span><br><span class="line">  &quot;from&quot;: 0,</span><br><span class="line">  &quot;size&quot;: 1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="query-filter"><a href="#query-filter" class="headerlink" title="query filter"></a>query filter</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"># https://www.elastic.co/guide/en/elasticsearch/reference/7.0/query-filter-context.html</span><br><span class="line">GET /ecommerce/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;bool&quot;: &#123;</span><br><span class="line">      &quot;must&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">          &quot;match&quot;: &#123;</span><br><span class="line">            &quot;product_name&quot;: &quot;南极人&quot;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      ],</span><br><span class="line">      &quot;filter&quot;: &#123;&quot;range&quot;: &#123;</span><br><span class="line">        &quot;price&quot;: &#123;</span><br><span class="line">          &quot;gte&quot;: 20,</span><br><span class="line">          &quot;lte&quot;: 100</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="全文检索"><a href="#全文检索" class="headerlink" title="全文检索"></a>全文检索</h1><h2 id="只要-field-中有就返回"><a href="#只要-field-中有就返回" class="headerlink" title="只要 field 中有就返回"></a>只要 field 中有就返回</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET /ecommerce/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match&quot;: &#123;</span><br><span class="line">      &quot;product_name&quot;: &quot;南极人&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="highlight"><a href="#highlight" class="headerlink" title="highlight"></a>highlight</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">GET /ecommerce/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match&quot;: &#123;</span><br><span class="line">      &quot;product_name&quot;: &quot;南极人&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;highlight&quot;: &#123;</span><br><span class="line">    &quot;fields&quot;: &#123;</span><br><span class="line">      &quot;product_name&quot;:&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="fuzziness-模糊查询"><a href="#fuzziness-模糊查询" class="headerlink" title="fuzziness 模糊查询"></a>fuzziness 模糊查询</h1><h2 id="先用全文检索"><a href="#先用全文检索" class="headerlink" title="先用全文检索"></a>先用全文检索</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET /ecommerce/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match&quot;: &#123;</span><br><span class="line">      &quot;product_name&quot;: &quot;南极人上衣&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="开启模糊查询"><a href="#开启模糊查询" class="headerlink" title="开启模糊查询"></a>开启模糊查询</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">GET /ecommerce/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match&quot;: &#123;</span><br><span class="line">      &quot;product_name&quot;: &#123;</span><br><span class="line">        &quot;query&quot;: &quot;南极人上衣&quot;,</span><br><span class="line">        &quot;operator&quot;: &quot;and&quot;</span><br><span class="line">      &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="phrase-search"><a href="#phrase-search" class="headerlink" title="phrase search"></a>phrase search</h1><h2 id="完全匹配"><a href="#完全匹配" class="headerlink" title="完全匹配"></a>完全匹配</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET /ecommerce/_search</span><br><span class="line">&#123;</span><br><span class="line"> &quot;query&quot;: &#123;</span><br><span class="line">   &quot;match_phrase&quot;: &#123;</span><br><span class="line">     &quot;product_name&quot;: &quot;南极人上衣&quot;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="聚合查询"><a href="#聚合查询" class="headerlink" title="聚合查询"></a>聚合查询</h1><h2 id="正排"><a href="#正排" class="headerlink" title="正排"></a>正排</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Set fielddata=true on [tags] in order to load fielddata in memory by uninverting the inverted index. Note that this can however use significant memory. Alternatively use a keyword field instead.&quot;</span><br><span class="line">PUT /ecommerce/_mapping</span><br><span class="line">&#123;</span><br><span class="line">  &quot;properties&quot;: &#123;</span><br><span class="line">    &quot;tags&quot;:&#123;</span><br><span class="line">      &quot;type&quot;: &quot;text&quot;,</span><br><span class="line">      &quot;fielddata&quot;: true</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="aggs"><a href="#aggs" class="headerlink" title="aggs"></a>aggs</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET /ecommerce/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;aggs&quot;: &#123;</span><br><span class="line">    &quot;whatever&quot;: &#123;</span><br><span class="line">      &quot;terms&quot;: &#123;</span><br><span class="line">        &quot;field&quot;: &quot;tags&quot;,</span><br><span class="line">        &quot;size&quot;: 10</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="先分组再求平均值-之后按平均值排序"><a href="#先分组再求平均值-之后按平均值排序" class="headerlink" title="先分组再求平均值,之后按平均值排序"></a>先分组再求平均值,之后按平均值排序</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">GET /ecommerce/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match&quot;: &#123;</span><br><span class="line">      &quot;product_name&quot;: &quot;南极人&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, </span><br><span class="line">  &quot;aggs&quot;: &#123;</span><br><span class="line">    &quot;NAME&quot;: &#123;</span><br><span class="line">      &quot;terms&quot;: &#123;</span><br><span class="line">        &quot;field&quot;: &quot;tags&quot;,</span><br><span class="line">        &quot;order&quot;: &#123;</span><br><span class="line">          &quot;avg_price&quot;: &quot;asc&quot;</span><br><span class="line">        &#125;, </span><br><span class="line">        &quot;size&quot;: 10</span><br><span class="line">      &#125;,</span><br><span class="line">    &quot;aggs&quot;: &#123;</span><br><span class="line">      &quot;avg_price&quot;: &#123;</span><br><span class="line">       &quot;avg&quot;: &#123;</span><br><span class="line">         &quot;field&quot;: &quot;price&quot;</span><br><span class="line">       &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="区间"><a href="#区间" class="headerlink" title="区间"></a>区间</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">GET /ecommerce/_search</span><br><span class="line">&#123;</span><br><span class="line">  &quot;aggs&quot;: &#123;</span><br><span class="line">    &quot;price_range&quot;: &#123;</span><br><span class="line">      &quot;range&quot;: &#123;</span><br><span class="line">        &quot;field&quot;: &quot;price&quot;,</span><br><span class="line">        &quot;ranges&quot;: [</span><br><span class="line">          &#123;&quot;from&quot;: 0,</span><br><span class="line">            &quot;to&quot;: 50</span><br><span class="line">          &#125;,</span><br><span class="line">          &#123;</span><br><span class="line">            &quot;from&quot;: 50,</span><br><span class="line">            &quot;to&quot;: 100</span><br><span class="line">          &#125;,</span><br><span class="line">          &#123;</span><br><span class="line">            &quot;from&quot;: 100</span><br><span class="line">            , &quot;to&quot;: 150</span><br><span class="line">          &#125;,</span><br><span class="line">          &#123;&quot;from&quot;: 150,</span><br><span class="line">            &quot;to&quot;: 200</span><br><span class="line">          &#125;</span><br><span class="line">        ]</span><br><span class="line">      &#125;,</span><br><span class="line">        &quot;aggs&quot;: &#123;</span><br><span class="line">    &quot;tags_group&quot;: &#123;</span><br><span class="line">      &quot;terms&quot;: &#123;</span><br><span class="line">        &quot;field&quot;: &quot;tags&quot;,</span><br><span class="line">        &quot;size&quot;: 10</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;aggs&quot;: &#123;</span><br><span class="line">        &quot;avg_price&quot;: &#123;</span><br><span class="line">          &quot;avg&quot;: &#123;</span><br><span class="line">            &quot;field&quot;: &quot;price&quot;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      ElasticSearch 7 的基本操作
+    
+    </summary>
+    
+      <category term="搜索" scheme="https://ahianzhang.com/categories/%E6%90%9C%E7%B4%A2/"/>
+    
+    
+      <category term="ElasticSearch" scheme="https://ahianzhang.com/tags/ElasticSearch/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>elasticsearch 集群容错</title>
+    <link href="https://ahianzhang.com/2019/05/24/elasticsearch02/"/>
+    <id>https://ahianzhang.com/2019/05/24/elasticsearch02/</id>
+    <published>2019-05-24T08:15:45.000Z</published>
+    <updated>2019-05-28T03:57:39.332Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong>Q:有三台服务器，三个 Primary Shard怎么配置能使 ElasticSearch 达到高可用</strong></p>
+<p>在此之前应该先清楚 shard 、primary shard 、replica shard、node 的概念</p>
+<p>还有 primary shard 在确定好个数后后期是无法更改的，能扩容的只有 replica shard。</p>
+<p>三个 Primary Shard 的意思就是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3 primary + 3 replica = 6 shard (默认情况下)</span><br></pre></td></tr></table></figure>
+<p>此时服务器的 node 分配如下：</p>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/Paper.Paper%20%E5%B7%A5%E5%85%B7.18.png?Expires=1558947583&amp;OSSAccessKeyId=TMP.AgH9mmTffxqMm4bhGAQ2HQE6QZVHGlXuLxTF_Otw1cwBFkS6Tq0qyXpyQLplADAtAhUAkDAclpmnqDQSb5wuqbGwFgij2a8CFAoBuVW2l6aKeIIeIpv8IZy91CPt&amp;Signature=8nh55ELuWalMz0FtQNwnTweyDTk%3D" alt></p>
+<h2 id="一台服务器宕机"><a href="#一台服务器宕机" class="headerlink" title="一台服务器宕机"></a>一台服务器宕机</h2><p>此时整个 ES 集群是能够正常提供服务的，但是健康值会降到 yellow 状态</p>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/IMG_0038.PNG" alt></p>
+<h2 id="两台服务器宕机"><a href="#两台服务器宕机" class="headerlink" title="两台服务器宕机"></a>两台服务器宕机</h2><p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/IMG_0039.PNG" alt></p>
+<p>此时你会发现剩下的一台服务器上只会有一个 primary shard 和 一个 replica shard 节点，此时集群状态是 red 转态。</p>
+<p>怎么去分配能够使两台机器宕机后仍能正常使用？</p>
+<h2 id="设置更多的-replica-shard"><a href="#设置更多的-replica-shard" class="headerlink" title="设置更多的 replica shard"></a>设置更多的 replica shard</h2><p>既然 primary shard 初始化后不能再扩容了，那么可以扩容 replica shard。</p>
+<p>如下图，每台机器上不论是 primary 还是 replica shard 都保持了均与分布的状态，此时两台机器宕机后 ES 集群会自动将剩余的节点全都置位 primary shard。其内部原理将会在后面讲到。</p>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/IMG_0040.PNG" alt></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>虽然 replica shard 可以在后期调整，但是最佳的做法就是在确认架构的时候，而不是发现问题后再进行补救。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      三台服务器，三个 Primary Shard 怎么设计达到高可用
+    
+    </summary>
+    
+      <category term="搜索" scheme="https://ahianzhang.com/categories/%E6%90%9C%E7%B4%A2/"/>
+    
+    
+      <category term="ElasticSearch" scheme="https://ahianzhang.com/tags/ElasticSearch/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ElasticSearch 基础概念</title>
+    <link href="https://ahianzhang.com/2019/05/23/elastic-search/"/>
+    <id>https://ahianzhang.com/2019/05/23/elastic-search/</id>
+    <published>2019-05-23T09:08:16.000Z</published>
+    <updated>2019-05-27T23:31:52.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/IMG_0037.JPEG" alt="distru"></p>
+<h1 id="documnet"><a href="#documnet" class="headerlink" title="documnet"></a>documnet</h1><p>文档，类似于 Java 的实体类，但非面向对象的，比实体类更加灵活。</p>
+<h1 id="index"><a href="#index" class="headerlink" title="index"></a>index</h1><p>索引，用来存放文档，一个索引可存放若干个 document</p>
+<h1 id="type"><a href="#type" class="headerlink" title="type"></a>type</h1><p>ElastcSearch 7 以后过时，使用 _doc 代替，预计在未来会移除</p>
+<h1 id="node"><a href="#node" class="headerlink" title="node"></a>node</h1><p>单个服务器，其实就是一个 ES 实例，多个 node 组成一个集群，node 能够进行索引和查询操作。默认每个 node 启动时会分配一个 UUID 作为标识。</p>
+<h1 id="shard"><a href="#shard" class="headerlink" title="shard"></a>shard</h1><p>分片，用来存储索引，分为以下两个shard，平时认为 shard 为 primary shard 。</p>
+<p>ES 默认会分配 一个 primary shard 和与之对应的 replica shard。</p>
+<p>分片的目的是对 index 进行横向拆分，避免 index 容量过大所带来的性能和系统稳定问题，以及它的 failover mechanism 能够增加几群的容错能力。</p>
+<p>引用官方的话</p>
+<blockquote>
+<p>Sharding is important for two primary reasons:</p>
+<ul>
+<li>It allows you to horizontally split/scale your content volume</li>
+<li>It allows you to distribute and parallelize operations across shards (potentially on multiple nodes) thus increasing performance/throughput</li>
+</ul>
+</blockquote>
+<p>对于 shard 它是有容量上限的(Integer.MAX_VALUE - 128)</p>
+<blockquote>
+<p>Each Elasticsearch shard is a Lucene index. There is a maximum number of documents you can have in a single Lucene index. As of <a href="https://issues.apache.org/jira/browse/LUCENE-5843" target="_blank" rel="noopener"><code>LUCENE-5843</code></a>, the limit is <code>2,147,483,519</code> (= Integer.MAX_VALUE - 128) documents. You can monitor shard sizes using the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.1/cat-shards.html" target="_blank" rel="noopener"><code>_cat/shards</code></a> API.</p>
+</blockquote>
+<h2 id="primary-original-shard"><a href="#primary-original-shard" class="headerlink" title="primary/original shard"></a>primary/original shard</h2><p>主分片</p>
+<h2 id="replica-shard"><a href="#replica-shard" class="headerlink" title="replica shard"></a>replica shard</h2><p>副本分片,是主分片的副本，其内容和主分片内容一致，但<strong>不会同自己的主分片放在同一个 node 上</strong>。</p>
+<h1 id="cluster-state"><a href="#cluster-state" class="headerlink" title="cluster state"></a>cluster state</h1><p>集群状态</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">颜色</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">green</td>
+<td style="text-align:center">集群健康</td>
+</tr>
+<tr>
+<td style="text-align:center">yellow</td>
+<td style="text-align:center">有 replica shard 没有正常运行</td>
+</tr>
+<tr>
+<td style="text-align:center">red</td>
+<td style="text-align:center">有 primary shard 没有正常运行</td>
+</tr>
+</tbody>
+</table>
+<p>参考文章：</p>
+<p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started-concepts.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started-concepts.html</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      ElasticSearch 的基础概念
+    
+    </summary>
+    
+      <category term="搜索" scheme="https://ahianzhang.com/categories/%E6%90%9C%E7%B4%A2/"/>
+    
+    
+      <category term="ElasticSearch" scheme="https://ahianzhang.com/tags/ElasticSearch/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>技术选型怎么做</title>
+    <link href="https://ahianzhang.com/2019/05/23/technology-choice/"/>
+    <id>https://ahianzhang.com/2019/05/23/technology-choice/</id>
+    <published>2019-05-23T02:44:21.000Z</published>
+    <updated>2019-05-28T03:51:46.330Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="技术选型包括哪些"><a href="#技术选型包括哪些" class="headerlink" title="技术选型包括哪些"></a>技术选型包括哪些</h1><p>从个人观点出发，技术选型包括框架、工具、语言。</p>
+<h1 id="需要考虑的点"><a href="#需要考虑的点" class="headerlink" title="需要考虑的点"></a>需要考虑的点</h1><ul>
+<li>公司规模</li>
+<li>团队技术水平</li>
+<li>时间和成本</li>
+<li>生态</li>
+<li>风险</li>
+</ul>
+<h2 id="公司规模"><a href="#公司规模" class="headerlink" title="公司规模"></a>公司规模</h2><h3 id="小公司"><a href="#小公司" class="headerlink" title="小公司"></a>小公司</h3><p>对于初创公司或者小公司来讲，上级领导的意愿更多的是能够快速盈利，此时应该选择<strong>成熟便捷的框架</strong>，<br>尽量减少学习成本，这就属于经验优先，因为只有做出成品并且盈利，公司才能够生存。</p>
+<h3 id="中型公司"><a href="#中型公司" class="headerlink" title="中型公司"></a>中型公司</h3><p>中型公司是由小公司慢慢发展的，此时技术有了一定的积累，并且也有能力自己去做一些定制化的开发，此时需要考虑的问题是<strong>自己开发还是使用现有产品</strong> </p>
+<p>举个例子：目前公司内部需要搭建一套日志收集和监控系统，该怎么做？<br>         很多人最先想到的是 ELK ，但这样是不可以的，选型的话你要了解市场上都有哪些日志的框架，结合实际的项目，找到最方便的那一个，不能说 ELK 用的人多你就用，项目部署在阿里云，那使用阿里云的日志服务是不是更方便快捷？</p>
+<h3 id="大型公司"><a href="#大型公司" class="headerlink" title="大型公司"></a>大型公司</h3><p>大型公司就比较随意了，可能会花很长时间很多精力放在自研上</p>
+<h2 id="团队技术水平"><a href="#团队技术水平" class="headerlink" title="团队技术水平"></a>团队技术水平</h2><p>如果一个技术恰好能够解决当前遇到的问题或者在重构时能够解决性能的瓶颈，但是，它可能是用 GO 语言写的，而团队用的是 Java，此时需要考虑的是如果引进来了，那么能够多久能上手呢？之前看到某公司招聘的 JD ，如果你自认为可以在一周内精通领域，那么上述的要求可以不用遵循。所以在面试新人时就需要从多维度去考察，在此不细说；如果成员已经确定但是技术水平不高，那么你就需要如何去提升团队的技术水平。</p>
+<h2 id="时间和成本"><a href="#时间和成本" class="headerlink" title="时间和成本"></a>时间和成本</h2><p>记住，如果你在公司工作，那你就是给别人打工的，你的职责就是让企业赚钱，领导不会关心你用什么技术，但他能知道你用多久去把业务实现，此时你需要考虑什么？理想状态是时间短高收益，这需要借助二八原则，用百分之二十的成本带来百分之八十的收益。</p>
+<p>举个例子：领导规定三天时间日志服务搭起来，并且上生产环境，如果你用 ELK 那你需要很多配置，如果你用云产品，直接集成就能用。有人可能会想，用云产品不是得花很多钱吗？我最初也是这样想，但后来我是这样想，首先钱不用你出，而且你自己搭的 ELK 后期维护消耗多少算过没有，和你云服务比一比看看哪个多。</p>
+<h2 id="风险"><a href="#风险" class="headerlink" title="风险"></a>风险</h2><p>风险其实一般很难发现的，比如安全问题，只有漏洞报出来你才会知道，还有就是有 BUG 但项目不维护了，这就是最后要讲的生态。</p>
+<h2 id="生态"><a href="#生态" class="headerlink" title="生态"></a>生态</h2><p>一个好的项目不是看多少人用，而是有一个成熟的社区，你提问题有人及时回，你提建议或者 BUG 开发人员会跟进，采纳后会加入下次发版，这比你遇到问题后去提 issue 人家不回你，问别人也不清楚，这样就是一次失败的选型。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>技术选型离不开业务，脱离了业务你的技术再高也将无法体现。选型重要的还是选择问题，这能映射成生活，权衡一件事，要从多个角度去思考。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      技术选型要结合实际的环境
+    
+    </summary>
+    
+      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
+    
+    
+      <category term="技术" scheme="https://ahianzhang.com/tags/%E6%8A%80%E6%9C%AF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>条件概率、全概率与贝叶斯公式</title>
+    <link href="https://ahianzhang.com/2019/05/18/math01/"/>
+    <id>https://ahianzhang.com/2019/05/18/math01/</id>
+    <published>2019-05-18T04:17:40.000Z</published>
+    <updated>2019-07-30T03:54:27.647Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="条件概率公式"><a href="#条件概率公式" class="headerlink" title="条件概率公式"></a>条件概率公式</h1><p>设事件A 发生的概率为 P(A), 事件B 发生的概率为 P(B),则在<code>事件B发生的情况下事件A发生的概率（A given B 的概率）</code>为：</p>
+<p>$$ P(A|B)=\frac{P(AB)}{P(B)} $$</p>
+<h1 id="全概率公式"><a href="#全概率公式" class="headerlink" title="全概率公式"></a>全概率公式</h1><p>如果直接求事件A 的概率比较困难的时候，可以将事件A发生的概率分成一个个小的事件B的概率</p>
+<p>$$ P(A)=\sum \limits_n{P(B_{n})P(A|B_{n})} $$</p>
+<h1 id="贝叶斯公式"><a href="#贝叶斯公式" class="headerlink" title="贝叶斯公式"></a>贝叶斯公式</h1><p>$$ P(B_{n}|A)=\frac{P(A|B_{n})P(B_{n})}{\sum \limits_n P(A|B_{n})P(B_{n})} $$</p>
+]]></content>
+    
+    <summary type="html">
+    
+      数学填坑计划
+    
+    </summary>
+    
+      <category term="算法" scheme="https://ahianzhang.com/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="概率论" scheme="https://ahianzhang.com/tags/%E6%A6%82%E7%8E%87%E8%AE%BA/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>年终总结</title>
+    <link href="https://ahianzhang.com/2018/12/31/summary09/"/>
+    <id>https://ahianzhang.com/2018/12/31/summary09/</id>
+    <published>2018-12-31T12:15:45.000Z</published>
+    <updated>2019-05-27T08:33:09.524Z</updated>
+    
+    <content type="html"><![CDATA[<p>很久没有写博客了，上一篇大概是在月初，这次算是对过去进行总结，准备迎接新的一年。<br>我不是很会写博客，纯粹是附庸风雅。</p>
+<h2 id="2018年"><a href="#2018年" class="headerlink" title="2018年"></a>2018年</h2><p>今年是从学校走向工作岗位的第一年，也是第一个年终总结。</p>
+<h3 id="学校"><a href="#学校" class="headerlink" title="学校"></a>学校</h3><p>感谢张健全老师，今年年初带我去一个初创公司做官网，现在看自己的代码很 LOW ，但当时已经算班上很 NB 的了，今年算是我的崛起之年，大一大二玩了两年，纯玩，没学什么，当初刚入学打算好好去学数学，结果因为老师的口音很重，还有自己脑子不好使，导致啥都没干，大三开始自学 JAVA ,和我的同桌一起，他学的比我认真比我专一，后来就导致全班的 jsp 网站都去请教他，而我呢，意志不坚定，开始决定主攻 JAVA ，后来决定学 Android ，再后来想学大数据等等，当然最后我也成了班上的‘大牛’，现在想想，很值得玩味，单纯而美好。在大学期间结识了朋友于XX，哈哈。我们小组是班上的学霸组，组里有两个美眉，毕业前送了她们两人一人一盒面膜，算是四年的交情了，每次都是快毕业的时候才会活跃。</p>
+<h3 id="工作"><a href="#工作" class="headerlink" title="工作"></a>工作</h3><p>北京，八一，上品，这是我目前供职的公司，公司氛围很好，当初面试我的老大很有学识，理论基础很扎实，很爱读书，是我非常钦佩的前辈，但是不到两个月就去美团了，拿到了蚂蚁金服,华为，美团点评的 Offer 。新老大是位 TGO 会员，技术专家，我是他手里第一个转正的，如果说之前的老大是理论派，那么当前这位老大就是实干派了，他让我懂了如何去做好一个职场人士，教了我很多，让我从毛毛躁躁到踏踏实实。</p>
+<h3 id="情感"><a href="#情感" class="headerlink" title="情感"></a>情感</h3><p>理想与现实之间，我在想男人花言巧语应不应该，我能这么快成长或许也是因为感情，或许我是自私的，我不知该如何去理清这段感情，不想再回忆了。</p>
+<h2 id="2019年"><a href="#2019年" class="headerlink" title="2019年"></a>2019年</h2><h3 id="计划"><a href="#计划" class="headerlink" title="计划"></a>计划</h3><ul>
+<li>从 0 到 1 完成数据结构的实现，完成《剑指 offer 》和 cc189。</li>
+<li>完成我负责的两个系统</li>
+<li>读完 6本 技术书籍和 10本 非技术书籍</li>
+<li>攒钱</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;很久没有写博客了，上一篇大概是在月初，这次算是对过去进行总结，准备迎接新的一年。&lt;br&gt;我不是很会写博客，纯粹是附庸风雅。&lt;/p&gt;
+&lt;h2 id=&quot;2018年&quot;&gt;&lt;a href=&quot;#2018年&quot; class=&quot;headerlink&quot; title=&quot;2018年&quot;&gt;&lt;/a&gt;20
+    
+    </summary>
+    
+      <category term="总结" scheme="https://ahianzhang.com/categories/%E6%80%BB%E7%BB%93/"/>
+    
+    
+      <category term="年终总结" scheme="https://ahianzhang.com/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>迁移到 ubuntu18 的问题及配置</title>
+    <link href="https://ahianzhang.com/2018/12/02/ubuntu01/"/>
+    <id>https://ahianzhang.com/2018/12/02/ubuntu01/</id>
+    <published>2018-12-02T14:29:50.000Z</published>
+    <updated>2019-07-30T03:56:12.396Z</updated>
+    
+    <content type="html"><![CDATA[<p>今天终于下定决心安装了 Ubuntu 系统，将新系统配置成自己熟悉的模式是需要很长的一段时间，更何况是双系统。下面是我遇到的问题，经过搜索与尝试并解决。</p>
+<h3 id="执行关机或者重启时卡死"><a href="#执行关机或者重启时卡死" class="headerlink" title="执行关机或者重启时卡死"></a>执行关机或者重启时卡死</h3><p>在卡死后强制关机再启动后我去查了一下系统日志，发现是显卡驱动的问题，因为我的电脑是双显卡，一个是 Intel 的核显，另一个是 NVIDIA 的 GTX 1050 卡，在 Ubuntu 装完后系统默认使用的是核显，但是 3D 图形渲染却用的是 GTX 的，我不清楚具体是不是这个原因，只是在描述可能的问题，在尝试后总结出对于我的电脑适用的 Solution</p>
+<p>1、 禁用掉 bios 里的 security boot ，有的可能是灰色不可变的，不同的 bios 有不同的关闭方式，我的 bios 是需要设置超级用户的密码，设置完成后就能关闭 security boot 了</p>
+<p>2、在 Ubuntu 下使用下面命令查看显卡相关信息，我每次使用这两个命令后不久就卡死，每次都是强制关机。对磁盘损伤很大。<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lspci | grep -i vga</span><br><span class="line">lspci | grep -i 3d</span><br></pre></td></tr></table></figure></p>
+<p>3、使用下面命令，查找 N卡驱动并安装适合本系统的驱动，安装完后重启(此时如果依然卡死那就再强制重启)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu-drivers devices</span><br><span class="line">sudo ubuntu-drivers autoinstall</span><br></pre></td></tr></table></figure></p>
+<p>4、开机后会有一个 N卡的设置软件，此时系统默认使用的就是 N卡了。可以正常关机。</p>
+<h3 id="优化问题"><a href="#优化问题" class="headerlink" title="优化问题"></a>优化问题</h3><p>优化成自己熟悉的环境，下载 SS 、IDEA 等还有各种其他的环境，去看一下知乎上推荐<br>软件</p>
+]]></content>
+    
+    <summary type="html">
+    
+      Ubuntu 双系统装机问题
+    
+    </summary>
+    
+      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
+    
+    
+      <category term="效率" scheme="https://ahianzhang.com/tags/%E6%95%88%E7%8E%87/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>总结</title>
+    <link href="https://ahianzhang.com/2018/11/20/summary08/"/>
+    <id>https://ahianzhang.com/2018/11/20/summary08/</id>
+    <published>2018-11-20T14:18:18.000Z</published>
+    <updated>2019-05-06T02:09:52.614Z</updated>
+    
+    <content type="html"><![CDATA[<p>有段时间没有写博客了，因为我在思考如何去写好一篇技术性文章，而不是随性所欲、天马星空似的。以前写的很多博客真的是太潦草，这就和 CSDN 那样一篇文章复制来复制去的不管什么页面样式乱了之类的，总之就是自己技术不到家，分析的深度也不过。看了会有很多感慨。只要死不了就不能停止学习新知识。</p>
+<p>工作上逐步进入正轨，但健康方面需要提升，脾胃虚，这算是一个老毛病了，还得靠养。</p>
+<p>之前老大分享的一个技术问题，感觉很有意思，假如有十万条数据需要更新到库中，但是需要先根据条件过滤一遍(很多表聚合在一起然后插到一张新表里，此处过滤是为了生成对应的格式)，现在有两个方案：</p>
+<ul>
+<li>过滤完数据后先 insert 进新表，紧接着进行 update ，然后循环操作十万次</li>
+<li>将过滤后的数据 insert 到一张临时表里，等数据全部插入后再一起更新</li>
+</ul>
+<p>后者效率是前者的 60 倍左右，这里涉及到的问题是底层持久化需要做的 IO 消耗性能。</p>
+<p>上周去参加了 Flink China 北京的 Meetup，有 360 、京东风控 、 GrowingIO 和 阿里巴巴的讲师，讲的都很出色，而且我还在现场面基了左耳听风的群友。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;有段时间没有写博客了，因为我在思考如何去写好一篇技术性文章，而不是随性所欲、天马星空似的。以前写的很多博客真的是太潦草，这就和 CSDN 那样一篇文章复制来复制去的不管什么页面样式乱了之类的，总之就是自己技术不到家，分析的深度也不过。看了会有很多感慨。只要死不了就不能停止学
+    
+    </summary>
+    
+      <category term="总结" scheme="https://ahianzhang.com/categories/%E6%80%BB%E7%BB%93/"/>
+    
+    
+      <category term="工作总结" scheme="https://ahianzhang.com/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用 psi-probe 监控 Tomcat</title>
+    <link href="https://ahianzhang.com/2018/09/06/performanceance-tuning05/"/>
+    <id>https://ahianzhang.com/2018/09/06/performanceance-tuning05/</id>
+    <published>2018-09-06T15:51:38.000Z</published>
+    <updated>2019-07-30T03:55:19.710Z</updated>
+    
+    <content type="html"><![CDATA[<p>psi-probe 是一款非常强大的开源 Tomcat 监控工具，使用时可以点击<a href="https://github.com/psi-probe/psi-probe/releases" target="_blank" rel="noopener">这里</a>下载</p>
+<p>配置用户：</p>
+<p>在 tomcat/webapps/docs/deployer-howto.html 文档的 manager 下有说明</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conf/tomcat-user.xml</span><br></pre></td></tr></table></figure>
+<p>1、添加用户<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;role rolename=&quot;ahian&quot;/&gt;</span><br><span class="line">&lt;role rolename=&quot;manager-gui&quot;/&gt;</span><br><span class="line">&lt;role rolename=&quot;manager-status&quot;/&gt;</span><br><span class="line">&lt;user username=&quot;ahian&quot; password=&quot;123456&quot; roles=&quot;ahian,manager-gui,manager-status&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
+<p>2、在 conf 文件夹中新建 Catalina/localhost/manager.xml 并编辑<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span><br><span class="line">	<span class="tag">&lt;<span class="name">Context</span> <span class="attr">privileged</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">	  <span class="attr">antiResourceLocking</span>=<span class="string">"false"</span></span></span><br><span class="line"><span class="tag">	  <span class="attr">docBase</span>=<span class="string">"$&#123;catalina.home&#125;/webapps/manager"</span></span></span><br><span class="line"><span class="tag">		&gt;</span></span><br><span class="line">	         <span class="tag">&lt;<span class="name">Valve</span> <span class="attr">className</span>=<span class="string">"org.apache.catalina.valves.RemoteAddrValve"</span></span></span><br><span class="line"><span class="tag">	                <span class="attr">allow</span>=<span class="string">"127\.0\.0\.1"</span>/&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">Context</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>3、将 probe.war 包拷贝到 webapp 下，启动 tomcat<br>4、访问 localhost:8080/probe</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;psi-probe 是一款非常强大的开源 Tomcat 监控工具，使用时可以点击&lt;a href=&quot;https://github.com/psi-probe/psi-probe/releases&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;这里&lt;/a&gt;下载
+    
+    </summary>
+    
+      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
+    
+    
+      <category term="性能调优" scheme="https://ahianzhang.com/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Tomcat 远程 Debug</title>
+    <link href="https://ahianzhang.com/2018/09/04/performanceance-tuning04/"/>
+    <id>https://ahianzhang.com/2018/09/04/performanceance-tuning04/</id>
+    <published>2018-09-04T15:41:22.000Z</published>
+    <updated>2019-07-30T03:55:12.994Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="JDWP-协议介绍"><a href="#JDWP-协议介绍" class="headerlink" title="JDWP 协议介绍"></a>JDWP 协议介绍</h3><p>JDWP 是 Java Debug Wire Protocol 的缩写，它定义了调试器（debugger）和被调试的 Java 虚拟机（target vm）之间的通信协议。<br>详请参考<a href="https://www.ibm.com/developerworks/cn/java/j-lo-jpda3/" target="_blank" rel="noopener">此文</a>。</p>
+<h3 id="远程-Tomcat-服务器配置"><a href="#远程-Tomcat-服务器配置" class="headerlink" title="远程 Tomcat 服务器配置"></a>远程 Tomcat 服务器配置</h3><h4 id="修改启动文件"><a href="#修改启动文件" class="headerlink" title="修改启动文件"></a>修改启动文件</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi bin/startup.sh</span><br></pre></td></tr></table></figure>
+<p>在启动命令中添加启动参数 jpda<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec &quot;$PRGDIR&quot;/&quot;$EXECTABLE&quot; jpda start &quot;$@&quot;</span><br></pre></td></tr></table></figure></p>
+<h4 id="修改-catalina-文件（主要配置）"><a href="#修改-catalina-文件（主要配置）" class="headerlink" title="修改 catalina 文件（主要配置）"></a>修改 catalina 文件（主要配置）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi bin/catalina.sh</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$1</span>"</span> = <span class="string">"jpda"</span> ] ; <span class="keyword">then</span></span><br><span class="line">  <span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$JPDA_TRANSPORT</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">    JPDA_TRANSPORT=<span class="string">"dt_socket"</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line">  <span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$JPDA_ADDRESS</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">    JPDA_ADDRESS=<span class="string">"localhost:8000"</span>//这里是要修改的</span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line">  <span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$JPDA_SUSPEND</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">    JPDA_SUSPEND=<span class="string">"n"</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line">  <span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$JPDA_OPTS</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">    JPDA_OPTS=<span class="string">"-agentlib:jdwp=transport=<span class="variable">$JPDA_TRANSPORT</span>,address=<span class="variable">$JPDA_ADDRESS</span>,server=y,suspend=<span class="variable">$JPDA_SUSPEND</span>"</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line">  CATALINA_OPTS=<span class="string">"<span class="variable">$JPDA_OPTS</span> <span class="variable">$CATALINA_OPTS</span>"</span></span><br><span class="line">  <span class="built_in">shift</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<p>done</p>
+<h3 id="项目代码配置"><a href="#项目代码配置" class="headerlink" title="项目代码配置"></a>项目代码配置</h3><p>将项目文件打成 War 包 ， 如果是 SpringBoot 项目的话可以使用下面的打包方式：<br>1、Pom 文件将打包方式改成 war 启动类<br>2、启动类修改<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestApplication</span> <span class="keyword">extends</span> <span class="title">SpringBootServletInitializer</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> SpringApplicationBuilder <span class="title">configure</span><span class="params">(SpringApplicationBuilder builder)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> builder.sources(TestApplication.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(TestApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>3、mvn build/package</p>
+<h3 id="编辑器远程调试"><a href="#编辑器远程调试" class="headerlink" title="编辑器远程调试"></a>编辑器远程调试</h3><ul>
+<li>Eclipse：Debug Configurations-&gt;Remote Java Application</li>
+<li>IDEA：Run -&gt; Edit Configuration -&gt; add -&gt; remote</li>
+</ul>
+<p>配置好 host 和 port 就可以打断点进行调试了。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;JDWP-协议介绍&quot;&gt;&lt;a href=&quot;#JDWP-协议介绍&quot; class=&quot;headerlink&quot; title=&quot;JDWP 协议介绍&quot;&gt;&lt;/a&gt;JDWP 协议介绍&lt;/h3&gt;&lt;p&gt;JDWP 是 Java Debug Wire Protocol 的缩写，它定义了调试
+    
+    </summary>
+    
+      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
+    
+    
+      <category term="性能调优" scheme="https://ahianzhang.com/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>jstack 死循环和死锁定位</title>
+    <link href="https://ahianzhang.com/2018/09/03/performanceance-tuning03/"/>
+    <id>https://ahianzhang.com/2018/09/03/performanceance-tuning03/</id>
+    <published>2018-09-03T14:26:21.000Z</published>
+    <updated>2019-07-30T03:55:07.167Z</updated>
+    
+    <content type="html"><![CDATA[<p>jstack 是用来查看线程的命令<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstack [option] &lt;pid&gt;</span><br></pre></td></tr></table></figure></p>
+<p>先来看看线程的状态(<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/tooldescr034.html#sthref31" target="_blank" rel="noopener">官方文档</a>)</p>
+<ul>
+<li>New</li>
+<li>Runnable</li>
+<li>Blocked</li>
+<li>Waiting</li>
+<li>Timed_Waiting</li>
+<li>Terminated</li>
+</ul>
+<p>下面是 java 线程状态转化<br><img src="http://owxzmw7bm.bkt.clouddn.com/thread.jpg" alt></p>
+<p>代码模拟<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CpuController</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 死循环</span></span><br><span class="line"><span class="comment">	 * */</span></span><br><span class="line">	<span class="meta">@RequestMapping</span>(<span class="string">"/loop"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> List&lt;Long&gt; <span class="title">loop</span><span class="params">()</span></span>&#123;</span><br><span class="line">		String data = <span class="string">"&#123;\"data\":[&#123;\"partnerid\":]"</span>;</span><br><span class="line">		<span class="keyword">return</span> getPartneridsFromJson(data);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> Object lock1 = <span class="keyword">new</span> Object();</span><br><span class="line">	<span class="keyword">private</span> Object lock2 = <span class="keyword">new</span> Object();</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 死锁</span></span><br><span class="line"><span class="comment">	 * */</span></span><br><span class="line">	<span class="meta">@RequestMapping</span>(<span class="string">"/deadlock"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">deadlock</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">			<span class="keyword">synchronized</span>(lock1) &#123;</span><br><span class="line">				<span class="keyword">try</span> &#123;Thread.sleep(<span class="number">1000</span>);&#125;<span class="keyword">catch</span>(Exception e) &#123;&#125;</span><br><span class="line">				<span class="keyword">synchronized</span>(lock2) &#123;</span><br><span class="line">					System.out.println(<span class="string">"Thread1 over"</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;) .start();</span><br><span class="line">		<span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">			<span class="keyword">synchronized</span>(lock2) &#123;</span><br><span class="line">				<span class="keyword">try</span> &#123;Thread.sleep(<span class="number">1000</span>);&#125;<span class="keyword">catch</span>(Exception e) &#123;&#125;</span><br><span class="line">				<span class="keyword">synchronized</span>(lock1) &#123;</span><br><span class="line">					System.out.println(<span class="string">"Thread2 over"</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;) .start();</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"deadlock"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;Long&gt; <span class="title">getPartneridsFromJson</span><span class="params">(String data)</span></span>&#123;  </span><br><span class="line">	    <span class="comment">//&#123;\"data\":[&#123;\"partnerid\":982,\"count\":\"10000\",\"cityid\":\"11\"&#125;,&#123;\"partnerid\":983,\"count\":\"10000\",\"cityid\":\"11\"&#125;,&#123;\"partnerid\":984,\"count\":\"10000\",\"cityid\":\"11\"&#125;]&#125;  </span></span><br><span class="line">	    <span class="comment">//上面是正常的数据  </span></span><br><span class="line">	    List&lt;Long&gt; list = <span class="keyword">new</span> ArrayList&lt;Long&gt;(<span class="number">2</span>);  </span><br><span class="line">	    <span class="keyword">if</span>(data == <span class="keyword">null</span> || data.length() &lt;= <span class="number">0</span>)&#123;  </span><br><span class="line">	        <span class="keyword">return</span> list;  </span><br><span class="line">	    &#125;      </span><br><span class="line">	    <span class="keyword">int</span> datapos = data.indexOf(<span class="string">"data"</span>);  </span><br><span class="line">	    <span class="keyword">if</span>(datapos &lt; <span class="number">0</span>)&#123;  </span><br><span class="line">	        <span class="keyword">return</span> list;  </span><br><span class="line">	    &#125;  </span><br><span class="line">	    <span class="keyword">int</span> leftBracket = data.indexOf(<span class="string">"["</span>,datapos);  </span><br><span class="line">	    <span class="keyword">int</span> rightBracket= data.indexOf(<span class="string">"]"</span>,datapos);  </span><br><span class="line">	    <span class="keyword">if</span>(leftBracket &lt; <span class="number">0</span> || rightBracket &lt; <span class="number">0</span>)&#123;  </span><br><span class="line">	        <span class="keyword">return</span> list;  </span><br><span class="line">	    &#125;  </span><br><span class="line">	    String partners = data.substring(leftBracket+<span class="number">1</span>,rightBracket);  </span><br><span class="line">	    <span class="keyword">if</span>(partners == <span class="keyword">null</span> || partners.length() &lt;= <span class="number">0</span>)&#123;  </span><br><span class="line">	        <span class="keyword">return</span> list;  </span><br><span class="line">	    &#125;  </span><br><span class="line">	    <span class="keyword">while</span>(partners!=<span class="keyword">null</span> &amp;&amp; partners.length() &gt; <span class="number">0</span>)&#123;  </span><br><span class="line">	        <span class="keyword">int</span> idpos = partners.indexOf(<span class="string">"partnerid"</span>);  </span><br><span class="line">	        <span class="keyword">if</span>(idpos &lt; <span class="number">0</span>)&#123;  </span><br><span class="line">	            <span class="keyword">break</span>;  </span><br><span class="line">	        &#125;  </span><br><span class="line">	        <span class="keyword">int</span> colonpos = partners.indexOf(<span class="string">":"</span>,idpos);  </span><br><span class="line">	        <span class="keyword">int</span> commapos = partners.indexOf(<span class="string">","</span>,idpos);  </span><br><span class="line">	        <span class="keyword">if</span>(colonpos &lt; <span class="number">0</span> || commapos &lt; <span class="number">0</span>)&#123;  </span><br><span class="line">	            <span class="comment">//partners = partners.substring(idpos+"partnerid".length());//1  </span></span><br><span class="line">	            <span class="keyword">continue</span>;</span><br><span class="line">	        &#125;  </span><br><span class="line">	        String pid = partners.substring(colonpos+<span class="number">1</span>,commapos);  </span><br><span class="line">	        <span class="keyword">if</span>(pid == <span class="keyword">null</span> || pid.length() &lt;= <span class="number">0</span>)&#123;  </span><br><span class="line">	            <span class="comment">//partners = partners.substring(idpos+"partnerid".length());//2  </span></span><br><span class="line">	            <span class="keyword">continue</span>;</span><br><span class="line">	        &#125;  </span><br><span class="line">	        <span class="keyword">try</span>&#123;  </span><br><span class="line">	            list.add(Long.parseLong(pid));  </span><br><span class="line">	        &#125;<span class="keyword">catch</span>(Exception e)&#123;  </span><br><span class="line">	            <span class="comment">//do nothing  </span></span><br><span class="line">	        &#125;  </span><br><span class="line">	        partners = partners.substring(commapos);  </span><br><span class="line">	    &#125;  </span><br><span class="line">	    <span class="keyword">return</span> list;  </span><br><span class="line">	&#125;  </span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="死循环定位"><a href="#死循环定位" class="headerlink" title="死循环定位"></a>死循环定位</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">top </span><br><span class="line">jstack &lt;pid&gt; &gt; result.txt <span class="comment">#将结果追加到 txt 文件</span></span><br></pre></td></tr></table></figure>
+<p>负载过大会导致无法访问，使用 top 命名找到占用 cpu 最多的那个进程，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">top -p &lt;pid&gt; -H #打印所有的线程</span><br><span class="line">printf &quot;%x&quot; &lt;pid&gt; 将十进制的 pid 转换成 十六进制</span><br><span class="line">找到线程对应的 pid</span><br></pre></td></tr></table></figure></p>
+<h3 id="死锁定位"><a href="#死锁定位" class="headerlink" title="死锁定位"></a>死锁定位</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">jps <span class="_">-l</span> <span class="comment">#或者 ps -ef | grep java</span></span><br><span class="line">jstack &lt;pid&gt; &gt; result.txt</span><br></pre></td></tr></table></figure>
+<p>如果有死锁则会在文件末尾出现提示。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;jstack 是用来查看线程的命令&lt;br&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td clas
+    
+    </summary>
+    
+      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
+    
+    
+      <category term="性能调优" scheme="https://ahianzhang.com/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>jmap &amp; mat 内存溢出</title>
+    <link href="https://ahianzhang.com/2018/09/02/performanceance-tuning02/"/>
+    <id>https://ahianzhang.com/2018/09/02/performanceance-tuning02/</id>
+    <published>2018-09-02T11:46:08.000Z</published>
+    <updated>2019-07-30T03:55:01.632Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="模拟内存溢出"><a href="#模拟内存溢出" class="headerlink" title="模拟内存溢出"></a>模拟内存溢出</h3><p><img src="http://owxzmw7bm.bkt.clouddn.com/jvm.png" alt><br> S0 和 S1 同时只会有一个使用，另一个是空的。<br>Metaspace 中主要存放 class 和 methods 等</p>
+<p>模拟溢出的环境<br>堆内存溢出：通过不断地创建对象来将堆内存填充满<br>非堆内存溢出：通过继承 ClassLoader 配合 asm 工具来动态的创建类，直到将非堆内存填充满。这个代码可以<a href="https://gist.github.com/AhianZhang/c4c2c4ee6fb7a82190ac157c3bc606db" target="_blank" rel="noopener">点击这里查看</a></p>
+<p>将启动的 VM 参数调小，方便快速实现效果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MemoryController</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> List&lt;User&gt;  userList = <span class="keyword">new</span> ArrayList&lt;User&gt;();</span><br><span class="line">	<span class="keyword">private</span> List&lt;Class&lt;?&gt;&gt;  classList = <span class="keyword">new</span> ArrayList&lt;Class&lt;?&gt;&gt;();</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * -Xmx32M -Xms32M</span></span><br><span class="line"><span class="comment">	 * */</span></span><br><span class="line">	<span class="meta">@GetMapping</span>(<span class="string">"/heap"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">heap</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">		<span class="keyword">while</span>(<span class="keyword">true</span>) &#123;</span><br><span class="line">			userList.add(<span class="keyword">new</span> User(i++, UUID.randomUUID().toString()));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * -XX:MetaspaceSize=32M -XX:MaxMetaspaceSize=32M</span></span><br><span class="line"><span class="comment">	 * */</span></span><br><span class="line">	<span class="meta">@GetMapping</span>(<span class="string">"/nonheap"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">nonheap</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">while</span>(<span class="keyword">true</span>) &#123;</span><br><span class="line">			classList.addAll(Metaspace.createClasses());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出的异常分别为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;http-nio-8080-exec-2&quot; java.lang.OutOfMemoryError: GC overhead limit exceeded</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;http-nio-8080-exec-2&quot; Exception in thread &quot;http-nio-8080-exec-1&quot; java.lang.OutOfMemoryError: Metaspace</span><br><span class="line">java.lang.OutOfMemoryError: Metaspace</span><br><span class="line">Exception in thread &quot;ContainerBackgroundProcessor[StandardEngine[Tomcat]]&quot; java.lang.OutOfMemoryError: Metaspace</span><br></pre></td></tr></table></figure>
+<h3 id="导出内存映像文件"><a href="#导出内存映像文件" class="headerlink" title="导出内存映像文件"></a>导出内存映像文件</h3><p>C++ 内存泄漏是指 new 一个对象后指针丢失了，导致整个对象无法被回收，Java是指 new 了以后一直被占有没被释放。</p>
+<h4 id="内存溢出自动导出"><a href="#内存溢出自动导出" class="headerlink" title="内存溢出自动导出"></a>内存溢出自动导出</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-XX:+HeapDumpOnOutOfMemoryError</span><br><span class="line">-XX:HeapDumpPath=./</span><br></pre></td></tr></table></figure>
+<h4 id="使用-jmap-命令手动导出"><a href="#使用-jmap-命令手动导出" class="headerlink" title="使用 jmap 命令手动导出"></a>使用 jmap 命令手动导出</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jmap -dump:format=b,file=heap.hprof pid</span><br></pre></td></tr></table></figure>
+<p>有时内存大的时候有可能无法自定导出，这是就需要使用 jmap 手动导出</p>
+<h4 id="使用-mat-工具进行分析"><a href="#使用-mat-工具进行分析" class="headerlink" title="使用 mat 工具进行分析"></a>使用 mat 工具进行分析</h4><p>mat 是 eclipse 基金会下面的一款内存分析工具。可以从官网上下载。<br>运行 mat.exe 导入之前的 heap.hprof 文件，首页的 overview 一目了然不用过多解释，下面是常用的操作</p>
+<p><img src="http://owxzmw7bm.bkt.clouddn.com/mat.png" alt> </p>
+<p>在需要查看的对象上右键 merge shortest path to gc roots-&gt;exclude all phantom/week/soft,etc. reference<br>去掉所有的虚引用只留下强引用，此时会很容易排查.</p>
+<p>通过上面的方式基本上就能定位到致内存溢出的对象。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;模拟内存溢出&quot;&gt;&lt;a href=&quot;#模拟内存溢出&quot; class=&quot;headerlink&quot; title=&quot;模拟内存溢出&quot;&gt;&lt;/a&gt;模拟内存溢出&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;http://owxzmw7bm.bkt.clouddn.com/jvm.png&quot; al
+    
+    </summary>
+    
+      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
+    
+    
+      <category term="性能调优" scheme="https://ahianzhang.com/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>JVM 常用参数查看</title>
+    <link href="https://ahianzhang.com/2018/09/02/performanceance-tuning01/"/>
+    <id>https://ahianzhang.com/2018/09/02/performanceance-tuning01/</id>
+    <published>2018-09-02T08:57:36.000Z</published>
+    <updated>2019-07-30T03:54:51.410Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="JVM-参数"><a href="#JVM-参数" class="headerlink" title="JVM 参数"></a>JVM 参数</h3><ul>
+<li>标准参数</li>
+<li>-X 参数</li>
+<li>-XX 参数  </li>
+</ul>
+<h4 id="标准参数"><a href="#标准参数" class="headerlink" title="标准参数"></a>标准参数</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-help</span><br><span class="line">-server</span><br><span class="line">-client</span><br><span class="line">-version </span><br><span class="line">-showversion</span><br><span class="line">-cp</span><br><span class="line">-classpath</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h4 id="X-参数"><a href="#X-参数" class="headerlink" title="X 参数"></a>X 参数</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-Xint:解释执行</span><br><span class="line">-Xcomp：第一次使用就编译成本地代码(速度比慢)</span><br><span class="line">-Xmixed：混合模式，JVM 自己决定是否编译成本地代码</span><br></pre></td></tr></table></figure>
+<p>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">java -Xint - version</span><br><span class="line">----------------------</span><br><span class="line">output:</span><br><span class="line">java version &quot;1.8.0_121&quot;</span><br><span class="line">Java(TM) SE Runtime Environment (build 1.8.0_121-b13)</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM (build 25.121-b13, interpreted mode)</span><br></pre></td></tr></table></figure></p>
+<h4 id="XX-参数"><a href="#XX-参数" class="headerlink" title="XX 参数"></a>XX 参数</h4><h5 id="Boolean类型"><a href="#Boolean类型" class="headerlink" title="Boolean类型"></a>Boolean类型</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:[+-]&lt;name&gt; <span class="comment">#表示启用或者禁用 name 属性</span></span><br></pre></td></tr></table></figure>
+<p>举例：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-XX:+UserConcMarkSweepGC <span class="comment">#启用 CMS 垃圾收集器</span></span><br><span class="line">-XX:+UserG1GC <span class="comment">#启用了 G1 垃圾收集器</span></span><br></pre></td></tr></table></figure></p>
+<h5 id="Key-Value-类型"><a href="#Key-Value-类型" class="headerlink" title="Key-Value 类型"></a>Key-Value 类型</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:&lt;name&gt;=&lt;value&gt; <span class="comment">#表示 name 属性的值是 value</span></span><br></pre></td></tr></table></figure>
+<p>举例：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-XX:MaxGCPauseMillis=500 <span class="comment">#最大停顿时间</span></span><br><span class="line">-XX:GCTimeRatio=19</span><br></pre></td></tr></table></figure></p>
+<h5 id="Xmx-最大内存-Xms-最小内存"><a href="#Xmx-最大内存-Xms-最小内存" class="headerlink" title="-Xmx(最大内存) -Xms(最小内存)"></a>-Xmx(最大内存) -Xms(最小内存)</h5><p>-Xmx &lt;=&gt; -XX:MaxHeapSize<br>-Xms &lt;=&gt; -XX:InitialHeapSize</p>
+<h4 id="JVM-运行时参数"><a href="#JVM-运行时参数" class="headerlink" title="JVM 运行时参数"></a>JVM 运行时参数</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-XX:+PrintFlagsInitial <span class="comment">#查看初始值</span></span><br><span class="line">-XX:+PrintFlagsFinal <span class="comment">#查看最终值</span></span><br><span class="line">-XX:+UnlockExperimentalVMOptions <span class="comment">#解锁实验性参数</span></span><br><span class="line">-XX:+UnlockDiagnosticVMOptions <span class="comment">#解锁诊断参数</span></span><br><span class="line">-XX:+PrintCommandLineFlags <span class="comment">#打印命令行参数</span></span><br></pre></td></tr></table></figure>
+<p>结果中的 <code>=</code> 表示默认值； <code>:=</code> 被用户修改后的 JVM 的值。</p>
+<h3 id="查看参数的指令"><a href="#查看参数的指令" class="headerlink" title="查看参数的指令"></a>查看参数的指令</h3><h4 id="jps-查看-Java-进程"><a href="#jps-查看-Java-进程" class="headerlink" title="jps 查看 Java 进程"></a>jps 查看 Java 进程</h4><p>使用 <code>jps -l</code>命令查看进程号和具体的 Java 程序</p>
+<h4 id="jinfo-查看进程内的某个参数的值"><a href="#jinfo-查看进程内的某个参数的值" class="headerlink" title="jinfo 查看进程内的某个参数的值"></a>jinfo 查看进程内的某个参数的值</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">jinfo -flag &lt;name&gt; pid</span><br><span class="line">jinfo -flags &lt;name&gt; pid <span class="comment">#打印非默认值</span></span><br></pre></td></tr></table></figure>
+<h4 id="jstat-查看-JVM-统计信息"><a href="#jstat-查看-JVM-统计信息" class="headerlink" title="jstat 查看 JVM 统计信息"></a>jstat 查看 JVM 统计信息</h4><p>类加载、垃圾收集、JIT 编译<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-class</span><br><span class="line">-gc ...</span><br><span class="line">-compiler</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstat -gc 32144 1000 10 <span class="comment">#每隔1000ms打印一次，打印十次</span></span><br></pre></td></tr></table></figure>
+<p>-gc输出的结果</p>
+<ul>
+<li>S0C S1C S0U S1U : S0 和 S1 的总量和使用量</li>
+<li>EC EU ： Eden 区总量与使用量</li>
+<li>OC OU ： Old 区总量与使用量</li>
+<li>MC MU ： Metaspace 区总量与使用量</li>
+<li>CCSC CCSU ： 压缩类空间总量与使用量</li>
+<li>YGC YGCT ：YoungGC 的次数与时间</li>
+<li>FGC FGCT ： FullGC 的次数与时间</li>
+<li>GCT ：总的 GC 时间  </li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;JVM-参数&quot;&gt;&lt;a href=&quot;#JVM-参数&quot; class=&quot;headerlink&quot; title=&quot;JVM 参数&quot;&gt;&lt;/a&gt;JVM 参数&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;标准参数&lt;/li&gt;
+&lt;li&gt;-X 参数&lt;/li&gt;
+&lt;li&gt;-XX 参数  &lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
+    
+    
+      <category term="性能调优" scheme="https://ahianzhang.com/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/"/>
+    
+  </entry>
+  
+</feed>
