@@ -3,6 +3,55 @@
   
     
     <entry>
+      <title><![CDATA[ddd-01]]></title>
+      <url>/2019/07/30/ddd-01/</url>
+      <content type="html"><![CDATA[<h1 id="缘起"><a href="#缘起" class="headerlink" title="缘起"></a>缘起</h1><p>正式接触到领域驱动还是耗子叔在易观峰会上的演讲，当时听的一知半解，现在回头来看一看真的很棒。</p>
+<p><img src="http://image.younge.group/WechatIMG23.jpeg" alt></p>
+<h1 id="深入"><a href="#深入" class="headerlink" title="深入"></a>深入</h1><p>领域驱动设计适用于复杂的业务系统，但对于那些简单的使用 DDD 反而会增加复杂度。</p>
+<p>最近在读 Vaughn Vernon 《实现领域驱动设计》以及张逸写的领域驱动设计战略篇和战术篇，</p>
+<p>收益良多。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> DDD </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 概述 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[TDD 中使用的工具]]></title>
+      <url>/2019/07/30/test-tool/</url>
+      <content type="html"><![CDATA[<h3 id="Junit"><a href="#Junit" class="headerlink" title="Junit"></a>Junit</h3><p>常用单元测试工具</p>
+<h3 id="MockMvc"><a href="#MockMvc" class="headerlink" title="MockMvc"></a>MockMvc</h3><p>Spring 提供的模拟 Controller 接口调用的工具</p>
+<h3 id="Mocktio"><a href="#Mocktio" class="headerlink" title="Mocktio"></a>Mocktio</h3><p>能够提供 Mock 方法</p>
+<h3 id="Cucumber"><a href="#Cucumber" class="headerlink" title="Cucumber"></a>Cucumber</h3><p>行为驱动开发，以用户故事为核心，算是 TDD 的升级版，能够结合其他工具生成报表</p>
+]]></content>
+      
+        <categories>
+            
+            <category> TDD </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 测试工具 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[tf-idf 算法]]></title>
       <url>/2019/07/03/tf-idf/</url>
       <content type="html"><![CDATA[<p>tf-idf (term frequence-inverse document frequence) 词频-逆文档频率，是搜索常用的一个权重相关算法，其作用是评估一个 document 在一整个 document list 中的重要程度，下面分开来讲。</p>
