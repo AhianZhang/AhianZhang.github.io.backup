@@ -3,6 +3,49 @@
   
     
     <entry>
+      <title><![CDATA[一年工作经验总结]]></title>
+      <url>/2019/09/03/summary11/</url>
+      <content type="html"><![CDATA[<p>从 17 年开始到现在断断续续的写了一百多篇博客，每次看到以前写的博客都很感慨，浏览之前的博客其实能感受到这几年的变化与成长，但最近想了一下决定删除一些文章，从技术的关注向深度转变，方向可以从分类中看到，获取短期内不会再发生什么变化了，这是一次重要的选择，想要得到就要先放弃。</p>
+<h1 id="工作内容"><a href="#工作内容" class="headerlink" title="工作内容"></a>工作内容</h1><h2 id="技术"><a href="#技术" class="headerlink" title="技术"></a>技术</h2><ul>
+<li>重构搜索系统</li>
+<li>设计并编写微服务环境下统一用户管理系统</li>
+<li>代码规范的强制实施</li>
+<li>日志监控报警</li>
+<li>会刷 leetcode 算法题了</li>
+</ul>
+<h2 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h2><ul>
+<li>技术本身并没有价值</li>
+<li>认知升级</li>
+<li>把一件事做简单，把简单事做极致</li>
+<li>领域驱动设计</li>
+<li>二八原则</li>
+</ul>
+<h1 id="收获"><a href="#收获" class="headerlink" title="收获"></a>收获</h1><ul>
+<li>终于有成品了，之前就像总像蜻蜓点水一样，觉得什么都会，但没有实战经验。</li>
+<li>对 Spring IoC 和 AOP 有了更深的理解</li>
+<li>对代码的质量有了更严苛的要求</li>
+<li>认识到些单元测试的重要性</li>
+<li>能用自动化的就不要手工操作</li>
+<li>成本和投入产出比</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 总结 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 工作总结 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[我与领域驱动之缘]]></title>
       <url>/2019/07/30/ddd-01/</url>
       <content type="html"><![CDATA[<h1 id="缘起"><a href="#缘起" class="headerlink" title="缘起"></a>缘起</h1><p>正式接触到领域驱动还是耗子叔在易观峰会上的演讲，当时听的一知半解，现在回头来看一看真的很棒。</p>
