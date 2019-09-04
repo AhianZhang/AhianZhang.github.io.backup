@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>https://ahianzhang.com/2019/07/03/tf-idf/</loc>
+    <lastmod>2019-09-04T03:03:05.184Z</lastmod>
+    <data>
+        <display>
+        <title>tf-idf 算法</title>
+        <pubTime>2019-07-03T00:54:36.000Z</pubTime>
+        
+        <tag>算法</tag>
+         
+         
+           
+             
+              <breadCrumb title="搜索" url="https://ahianzhang.com/categories/%E6%90%9C%E7%B4%A2/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://ahianzhang.com/2019/09/03/summary11/</loc>
     <lastmod>2019-09-03T08:50:55.558Z</lastmod>
     <data>
@@ -395,26 +415,6 @@
            
              
               <breadCrumb title="算法" url="https://ahianzhang.com/categories/%E7%AE%97%E6%B3%95/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://ahianzhang.com/2019/07/03/tf-idf/</loc>
-    <lastmod>2019-07-07T06:12:56.000Z</lastmod>
-    <data>
-        <display>
-        <title>tf-idf 算法</title>
-        <pubTime>2019-07-03T00:54:36.000Z</pubTime>
-        
-        <tag>算法</tag>
-         
-         
-           
-             
-              <breadCrumb title="搜索" url="https://ahianzhang.com/categories/%E6%90%9C%E7%B4%A2/"/>
           
         </display>
     </data>
