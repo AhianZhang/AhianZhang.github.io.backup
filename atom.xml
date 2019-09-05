@@ -118,7 +118,7 @@
     <link href="https://ahianzhang.com/2019/07/03/tf-idf/"/>
     <id>https://ahianzhang.com/2019/07/03/tf-idf/</id>
     <published>2019-07-03T00:54:36.000Z</published>
-    <updated>2019-09-05T02:14:15.901Z</updated>
+    <updated>2019-09-05T02:22:23.550Z</updated>
     
     <content type="html"><![CDATA[<p>tf-idf (term frequence-inverse document frequence) 词频-逆文档频率，是搜索常用的一个权重相关算法，其作用是评估一个 document 在一整个 document list 中的重要程度，下面分开来讲。</p>
 <h2 id="term-frequence"><a href="#term-frequence" class="headerlink" title="term frequence"></a>term frequence</h2><p>tf 的意思就是一个词语在一个文件中出现的次数，对于一篇文章， tf 算法会将这篇文章进行分词并统计出现次数。这个词在这篇文章中出现的次数越多则说明越不重要，权重则越低。</p>
