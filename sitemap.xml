@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ahianzhang.com/about/index.html</loc>
+    
+    <lastmod>2019-09-16T11:03:23.356Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ahianzhang.com/2019/07/03/tf-idf/</loc>
     
     <lastmod>2019-09-05T02:22:23.550Z</lastmod>
@@ -212,13 +219,6 @@
   </url>
   
   <url>
-    <loc>https://ahianzhang.com/2018/11/20/summary08/</loc>
-    
-    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://ahianzhang.com/2018/01/30/summary04/</loc>
     
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
@@ -275,7 +275,7 @@
   </url>
   
   <url>
-    <loc>https://ahianzhang.com/about/index.html</loc>
+    <loc>https://ahianzhang.com/2018/11/20/summary08/</loc>
     
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
     
