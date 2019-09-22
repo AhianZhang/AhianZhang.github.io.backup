@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://ahianzhang.com/"/>
-  <updated>2019-09-03T08:50:55.558Z</updated>
+  <updated>2019-09-22T08:28:22.693Z</updated>
   <id>https://ahianzhang.com/</id>
   
   <author>
@@ -14,6 +14,39 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>知难行易</title>
+    <link href="https://ahianzhang.com/2019/09/22/summary12/"/>
+    <id>https://ahianzhang.com/2019/09/22/summary12/</id>
+    <published>2019-09-22T07:15:14.000Z</published>
+    <updated>2019-09-22T08:28:22.693Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>人们总是用自己的认知限制，来否认事物的存在</p>
+</blockquote>
+<p>”认知提升“应该是近几年频繁会听到的短语。一个人的认知决定了这个人站在什么高度去看待问题。最近接触了一些人一些事感觉确实如此。</p>
+<p>今年的世界人工智能大会开幕式马云和马斯克的谈话，个人更喜欢马斯克的想法，不局限于当下，敢作敢为。人类早晚都会在宇宙中生存，我们所做的只是促进或者减缓时代的到临，却无法阻止。</p>
+<p>在软件工程中，有面向对象的思维，有各种设计模式，这是最基础的然而也是大多数人忽略的，问什么是面向对象，总是答封装继承和多态，继续问面向对象的设计原则，此时估计会卡掉一大半。工作了一年有余，接触的东西多了，才逐渐明白新的技术或者框架并不是应该追逐的东西，最基础的才是最难的，像打地基，怎么打才能让其稳定负重，如果连设计模式都不清楚的话很难写出优秀的代码。</p>
+<p>知难，每个人都是懒惰的，都有惯性思维，但恰恰如此，只在自己熟悉的领域做事情，用不了多久就会废掉，这种人不愿改变自己的观念，也常常自欺欺人，在如今应该会被称为“社畜”吧。</p>
+<p>“信则有，不信则无”，它一直存在于那里，只是愿不愿意承认。</p>
+<p>行易，如果你的认知能够作为实践的理论基础，那么做不做只是选择问题。</p>
+<p>知行合一，是阳明学说的核心思想，如果说知难行易，那么知行合一则是更上一次的思想，有难便有易，万物总是存在对立面，如果能使二者达到某种平衡，那么其带来的影响必然是巨大的。</p>
+<p>平时多思考、多和有见识的人交流，是提升自己认知最好的方式。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      阳明先生所说知行合一在物欲横流的时代能有几人做到
+    
+    </summary>
+    
+      <category term="总结" scheme="https://ahianzhang.com/categories/%E6%80%BB%E7%BB%93/"/>
+    
+    
+      <category term="生活总结" scheme="https://ahianzhang.com/tags/%E7%94%9F%E6%B4%BB%E6%80%BB%E7%BB%93/"/>
+    
+  </entry>
   
   <entry>
     <title>一年工作经验总结</title>
@@ -708,41 +741,6 @@
     <summary type="html">
     
       &lt;p&gt;psi-probe 是一款非常强大的开源 Tomcat 监控工具，使用时可以点击&lt;a href=&quot;https://github.com/psi-probe/psi-probe/releases&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;这里&lt;/a&gt;下载
-    
-    </summary>
-    
-      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
-    
-    
-      <category term="性能调优" scheme="https://ahianzhang.com/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Tomcat 远程 Debug</title>
-    <link href="https://ahianzhang.com/2018/09/04/performanceance-tuning04/"/>
-    <id>https://ahianzhang.com/2018/09/04/performanceance-tuning04/</id>
-    <published>2018-09-04T15:41:22.000Z</published>
-    <updated>2019-07-30T03:55:12.994Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="JDWP-协议介绍"><a href="#JDWP-协议介绍" class="headerlink" title="JDWP 协议介绍"></a>JDWP 协议介绍</h3><p>JDWP 是 Java Debug Wire Protocol 的缩写，它定义了调试器（debugger）和被调试的 Java 虚拟机（target vm）之间的通信协议。<br>详请参考<a href="https://www.ibm.com/developerworks/cn/java/j-lo-jpda3/" target="_blank" rel="noopener">此文</a>。</p>
-<h3 id="远程-Tomcat-服务器配置"><a href="#远程-Tomcat-服务器配置" class="headerlink" title="远程 Tomcat 服务器配置"></a>远程 Tomcat 服务器配置</h3><h4 id="修改启动文件"><a href="#修改启动文件" class="headerlink" title="修改启动文件"></a>修改启动文件</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi bin/startup.sh</span><br></pre></td></tr></table></figure>
-<p>在启动命令中添加启动参数 jpda<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec &quot;$PRGDIR&quot;/&quot;$EXECTABLE&quot; jpda start &quot;$@&quot;</span><br></pre></td></tr></table></figure></p>
-<h4 id="修改-catalina-文件（主要配置）"><a href="#修改-catalina-文件（主要配置）" class="headerlink" title="修改 catalina 文件（主要配置）"></a>修改 catalina 文件（主要配置）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi bin/catalina.sh</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$1</span>"</span> = <span class="string">"jpda"</span> ] ; <span class="keyword">then</span></span><br><span class="line">  <span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$JPDA_TRANSPORT</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">    JPDA_TRANSPORT=<span class="string">"dt_socket"</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line">  <span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$JPDA_ADDRESS</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">    JPDA_ADDRESS=<span class="string">"localhost:8000"</span>//这里是要修改的</span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line">  <span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$JPDA_SUSPEND</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">    JPDA_SUSPEND=<span class="string">"n"</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line">  <span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$JPDA_OPTS</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">    JPDA_OPTS=<span class="string">"-agentlib:jdwp=transport=<span class="variable">$JPDA_TRANSPORT</span>,address=<span class="variable">$JPDA_ADDRESS</span>,server=y,suspend=<span class="variable">$JPDA_SUSPEND</span>"</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line">  CATALINA_OPTS=<span class="string">"<span class="variable">$JPDA_OPTS</span> <span class="variable">$CATALINA_OPTS</span>"</span></span><br><span class="line">  <span class="built_in">shift</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-<p>done</p>
-<h3 id="项目代码配置"><a href="#项目代码配置" class="headerlink" title="项目代码配置"></a>项目代码配置</h3><p>将项目文件打成 War 包 ， 如果是 SpringBoot 项目的话可以使用下面的打包方式：<br>1、Pom 文件将打包方式改成 war 启动类<br>2、启动类修改<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestApplication</span> <span class="keyword">extends</span> <span class="title">SpringBootServletInitializer</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> SpringApplicationBuilder <span class="title">configure</span><span class="params">(SpringApplicationBuilder builder)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> builder.sources(TestApplication.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(TestApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>3、mvn build/package</p>
-<h3 id="编辑器远程调试"><a href="#编辑器远程调试" class="headerlink" title="编辑器远程调试"></a>编辑器远程调试</h3><ul>
-<li>Eclipse：Debug Configurations-&gt;Remote Java Application</li>
-<li>IDEA：Run -&gt; Edit Configuration -&gt; add -&gt; remote</li>
-</ul>
-<p>配置好 host 和 port 就可以打断点进行调试了。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;JDWP-协议介绍&quot;&gt;&lt;a href=&quot;#JDWP-协议介绍&quot; class=&quot;headerlink&quot; title=&quot;JDWP 协议介绍&quot;&gt;&lt;/a&gt;JDWP 协议介绍&lt;/h3&gt;&lt;p&gt;JDWP 是 Java Debug Wire Protocol 的缩写，它定义了调试
     
     </summary>
     
