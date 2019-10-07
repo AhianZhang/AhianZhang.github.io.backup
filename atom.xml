@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://ahianzhang.com/"/>
-  <updated>2019-09-27T02:51:37.009Z</updated>
+  <updated>2019-10-07T12:28:41.548Z</updated>
   <id>https://ahianzhang.com/</id>
   
   <author>
@@ -14,6 +14,40 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>企业平台技术框架</title>
+    <link href="https://ahianzhang.com/2019/09/27/architecture-framework/"/>
+    <id>https://ahianzhang.com/2019/09/27/architecture-framework/</id>
+    <published>2019-09-27T03:50:35.000Z</published>
+    <updated>2019-10-07T12:28:41.548Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近看了阿里的 TMF2.0 交易平台的介绍，觉得很有兴趣，所以展开学习，因为认知以及自身水平，对于技术平台框架理解有限，如有不当之处还望斧正。</p>
+<p>在说 TMF2.0 之前先来说说 TOGAF。</p>
+<p><a href="https://www.opengroup.org/togaf" target="_blank" rel="noopener">TOGAF</a> 全称 The Open Group Architecture Framework，及开放组织结构框架，引用 WiKi 上的介绍：</p>
+<blockquote>
+<p><strong>开放组体系结构框架</strong>（英语：The Open Group Architecture Framework，缩写：<strong>TOGAF</strong>）是一个<a href="https://zh.wikipedia.org/wiki/企业架构" target="_blank" rel="noopener">企业架构</a>框架，它提供了一种设计，规划，实施和管理企业信息技术架构的方法<a href="https://zh.wikipedia.org/wiki/开放组体系结构框架#cite_note-2" target="_blank" rel="noopener">[2]</a>。TOGAF是一种高层设计方法。 它通常被建模为四个级别：业务，应用程序，数据，和技术。 它在很大程度上依赖于模块化，标准化以及已有的，经过验证的技术和产品。</p>
+</blockquote>
+<p>其实个人认为这种框架只不过是给企业一个参考，怎么落地还要结合自身所处的环境，一口吃不成一个胖子，好比技术创业，首先要有创意，其次是写代码，然后看能不能盈利，如果一直亏损那么所谓的架构也就无从谈起了。</p>
+<p>对于阿里系的 TMF2.0 它的诞生是为了解决问题的，当然新技术或者方案的出现都是为了解决现有问题，不然有谁愿意做无用功。 TMF2.0站在了一个全局的视角上，着重解决需求结构化，业务配置化以及 SRE，基于业务场景划分职责，使代码逻辑更清晰。这套技术平台上线后能大大的缩短开发周期，这对当前快变的市场来说是非常受益的。</p>
+<p>参考文章：</p>
+<p><a href="https://zhuanlan.zhihu.com/p/32253578" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/32253578</a></p>
+<p><a href="http://blog.itpub.net/31562044/viewspace-2639289/" target="_blank" rel="noopener">http://blog.itpub.net/31562044/viewspace-2639289/</a></p>
+<p><a href="http://blog.itpub.net/31562044/viewspace-2639289/" target="_blank" rel="noopener">http://blog.itpub.net/31562044/viewspace-2639289/</a>    </p>
+]]></content>
+    
+    <summary type="html">
+    
+      技术的出现必然是为了解决实际的问题，否则毫无价值
+    
+    </summary>
+    
+      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
+    
+    
+      <category term="平台架构" scheme="https://ahianzhang.com/tags/%E5%B9%B3%E5%8F%B0%E6%9E%B6%E6%9E%84/"/>
+    
+  </entry>
   
   <entry>
     <title>对创业的思考</title>
@@ -716,37 +750,6 @@
     
     
       <category term="效率" scheme="https://ahianzhang.com/tags/%E6%95%88%E7%8E%87/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>总结</title>
-    <link href="https://ahianzhang.com/2018/11/20/summary08/"/>
-    <id>https://ahianzhang.com/2018/11/20/summary08/</id>
-    <published>2018-11-20T14:18:18.000Z</published>
-    <updated>2019-05-06T02:09:52.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>有段时间没有写博客了，因为我在思考如何去写好一篇技术性文章，而不是随性所欲、天马星空似的。以前写的很多博客真的是太潦草，这就和 CSDN 那样一篇文章复制来复制去的不管什么页面样式乱了之类的，总之就是自己技术不到家，分析的深度也不过。看了会有很多感慨。只要死不了就不能停止学习新知识。</p>
-<p>工作上逐步进入正轨，但健康方面需要提升，脾胃虚，这算是一个老毛病了，还得靠养。</p>
-<p>之前老大分享的一个技术问题，感觉很有意思，假如有十万条数据需要更新到库中，但是需要先根据条件过滤一遍(很多表聚合在一起然后插到一张新表里，此处过滤是为了生成对应的格式)，现在有两个方案：</p>
-<ul>
-<li>过滤完数据后先 insert 进新表，紧接着进行 update ，然后循环操作十万次</li>
-<li>将过滤后的数据 insert 到一张临时表里，等数据全部插入后再一起更新</li>
-</ul>
-<p>后者效率是前者的 60 倍左右，这里涉及到的问题是底层持久化需要做的 IO 消耗性能。</p>
-<p>上周去参加了 Flink China 北京的 Meetup，有 360 、京东风控 、 GrowingIO 和 阿里巴巴的讲师，讲的都很出色，而且我还在现场面基了左耳听风的群友。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;有段时间没有写博客了，因为我在思考如何去写好一篇技术性文章，而不是随性所欲、天马星空似的。以前写的很多博客真的是太潦草，这就和 CSDN 那样一篇文章复制来复制去的不管什么页面样式乱了之类的，总之就是自己技术不到家，分析的深度也不过。看了会有很多感慨。只要死不了就不能停止学
-    
-    </summary>
-    
-      <category term="总结" scheme="https://ahianzhang.com/categories/%E6%80%BB%E7%BB%93/"/>
-    
-    
-      <category term="工作总结" scheme="https://ahianzhang.com/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/"/>
     
   </entry>
   

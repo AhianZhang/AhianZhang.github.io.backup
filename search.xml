@@ -3,6 +3,38 @@
   
     
     <entry>
+      <title><![CDATA[企业平台技术框架]]></title>
+      <url>/2019/09/27/architecture-framework/</url>
+      <content type="html"><![CDATA[<p>最近看了阿里的 TMF2.0 交易平台的介绍，觉得很有兴趣，所以展开学习，因为认知以及自身水平，对于技术平台框架理解有限，如有不当之处还望斧正。</p>
+<p>在说 TMF2.0 之前先来说说 TOGAF。</p>
+<p><a href="https://www.opengroup.org/togaf" target="_blank" rel="noopener">TOGAF</a> 全称 The Open Group Architecture Framework，及开放组织结构框架，引用 WiKi 上的介绍：</p>
+<blockquote>
+<p><strong>开放组体系结构框架</strong>（英语：The Open Group Architecture Framework，缩写：<strong>TOGAF</strong>）是一个<a href="https://zh.wikipedia.org/wiki/企业架构" target="_blank" rel="noopener">企业架构</a>框架，它提供了一种设计，规划，实施和管理企业信息技术架构的方法<a href="https://zh.wikipedia.org/wiki/开放组体系结构框架#cite_note-2" target="_blank" rel="noopener">[2]</a>。TOGAF是一种高层设计方法。 它通常被建模为四个级别：业务，应用程序，数据，和技术。 它在很大程度上依赖于模块化，标准化以及已有的，经过验证的技术和产品。</p>
+</blockquote>
+<p>其实个人认为这种框架只不过是给企业一个参考，怎么落地还要结合自身所处的环境，一口吃不成一个胖子，好比技术创业，首先要有创意，其次是写代码，然后看能不能盈利，如果一直亏损那么所谓的架构也就无从谈起了。</p>
+<p>对于阿里系的 TMF2.0 它的诞生是为了解决问题的，当然新技术或者方案的出现都是为了解决现有问题，不然有谁愿意做无用功。 TMF2.0站在了一个全局的视角上，着重解决需求结构化，业务配置化以及 SRE，基于业务场景划分职责，使代码逻辑更清晰。这套技术平台上线后能大大的缩短开发周期，这对当前快变的市场来说是非常受益的。</p>
+<p>参考文章：</p>
+<p><a href="https://zhuanlan.zhihu.com/p/32253578" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/32253578</a></p>
+<p><a href="http://blog.itpub.net/31562044/viewspace-2639289/" target="_blank" rel="noopener">http://blog.itpub.net/31562044/viewspace-2639289/</a></p>
+<p><a href="http://blog.itpub.net/31562044/viewspace-2639289/" target="_blank" rel="noopener">http://blog.itpub.net/31562044/viewspace-2639289/</a>    </p>
+]]></content>
+      
+        <categories>
+            
+            <category> 架构 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 平台架构 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[对创业的思考]]></title>
       <url>/2019/09/27/summary13/</url>
       <content type="html"><![CDATA[<p>在我还在读大学的时候就创业的想法，所以平时也会对创业的方面的内容更关注一些，加上平时的思考与感悟整理出来。</p>
