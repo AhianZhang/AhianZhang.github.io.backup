@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://ahianzhang.com/"/>
-  <updated>2019-10-07T12:28:41.548Z</updated>
+  <updated>2019-11-08T11:47:35.097Z</updated>
   <id>https://ahianzhang.com/</id>
   
   <author>
@@ -14,6 +14,43 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>面向对象的理解</title>
+    <link href="https://ahianzhang.com/2019/10/08/object-oriented-mind/"/>
+    <id>https://ahianzhang.com/2019/10/08/object-oriented-mind/</id>
+    <published>2019-10-08T04:12:20.000Z</published>
+    <updated>2019-11-08T11:47:35.097Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>说起面向对象的特征，大多数人肯会不加思索的答封装、继承、多态，可能还有抽象。最近在学 DDD 的时候，感觉它更加合理的运用了设计模式和面向对象的思想去解决复杂的业务场景，还有是阅读源码的时候也会看到大量的设计模式，所以说 Design Pattern 和 Object-Oriented 熟练的话会提升很大的代码质量（编程范式后续还会讲函数式和响应式）。</p>
+<p>下面只说自己的体会和见解，如有异议欢迎留言。</p>
+<h1 id="四大特征"><a href="#四大特征" class="headerlink" title="四大特征"></a>四大特征</h1><h2 id="抽象"><a href="#抽象" class="headerlink" title="抽象"></a>抽象</h2><p>抽象，隐藏与上下文无关的信息，抽象的目的是为了简单，从宏观的角度去处理问题，举例：你开车去上班，但你只要知道车能带你到公司而不用在乎车内部的复杂零件是如何做工的，此时车就抽象成为一个整体。</p>
+<h2 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h2><p>将功能相近的代码放到同一个类中，这样做的好处是能够进行解耦让不同的代码各司其职，具体细分为 <strong>Information hiding</strong> 和 <strong>Implementation hiding</strong> </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 通过 访问修饰符 讲一些细节保留在当前类中，而一些相对外开放的则使用 public 进行修饰</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">InformationHiding</span> </span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">//Restrict direct access to inward data</span></span><br><span class="line">    <span class="keyword">private</span> ArrayList items = <span class="keyword">new</span> ArrayList();</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//Provide a way to access data - internal logic can safely be changed in future</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ArrayList <span class="title">getItems</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> items;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ImplemenatationHiding</span> </span>&#123;</span><br><span class="line">    <span class="function">Integer <span class="title">sumAllItems</span><span class="params">(ArrayList items)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">InformationHiding</span> <span class="keyword">implements</span> <span class="title">ImplemenatationHiding</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">//Restrict direct access to inward data</span></span><br><span class="line">    <span class="keyword">private</span> ArrayList items = <span class="keyword">new</span> ArrayList();</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//Provide a way to access data - internal logic can safely be changed in future</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ArrayList <span class="title">getItems</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> items;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">sumAllItems</span><span class="params">(ArrayList items)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//Here you may do N number of things in any sequence</span></span><br><span class="line">        <span class="comment">//Which you do not want your clients to know</span></span><br><span class="line">        <span class="comment">//You can change the sequence or even whole logic</span></span><br><span class="line">        <span class="comment">//without affecting the client</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><p>继承就是子类继承父类并可以父类或者重写父类的方法，这样做能让基础功能代码复用，但是现在有一种说法是组合优先于继承，因为继承也有自身的局限性，容易把代码写死。</p>
+<h2 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h2><p>这里的个人理解就是一段代码写在不同的业务场景下有不同的功能，通过重载或者重写，其正规的说法是：</p>
+<blockquote>
+<p>In java language, polymorphism is essentially considered into two versions:</p>
+<ul>
+<li>Compile time polymorphism (static binding or <strong>method overloading</strong>)</li>
+<li>Runtime polymorphism (dynamic binding or <strong>method overriding</strong>)</li>
+</ul>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      对于面向对象，一直处于背书的状态，直到最近接触到底层设计才发现 OO 思想在 Java 语言中的重要性
+    
+    </summary>
+    
+      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
+    
+    
+      <category term="面向对象" scheme="https://ahianzhang.com/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/"/>
+    
+  </entry>
   
   <entry>
     <title>企业平台技术框架</title>
@@ -721,35 +758,6 @@
     
     
       <category term="年终总结" scheme="https://ahianzhang.com/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>迁移到 ubuntu18 的问题及配置</title>
-    <link href="https://ahianzhang.com/2018/12/02/ubuntu01/"/>
-    <id>https://ahianzhang.com/2018/12/02/ubuntu01/</id>
-    <published>2018-12-02T14:29:50.000Z</published>
-    <updated>2019-07-30T03:56:12.396Z</updated>
-    
-    <content type="html"><![CDATA[<p>今天终于下定决心安装了 Ubuntu 系统，将新系统配置成自己熟悉的模式是需要很长的一段时间，更何况是双系统。下面是我遇到的问题，经过搜索与尝试并解决。</p>
-<h3 id="执行关机或者重启时卡死"><a href="#执行关机或者重启时卡死" class="headerlink" title="执行关机或者重启时卡死"></a>执行关机或者重启时卡死</h3><p>在卡死后强制关机再启动后我去查了一下系统日志，发现是显卡驱动的问题，因为我的电脑是双显卡，一个是 Intel 的核显，另一个是 NVIDIA 的 GTX 1050 卡，在 Ubuntu 装完后系统默认使用的是核显，但是 3D 图形渲染却用的是 GTX 的，我不清楚具体是不是这个原因，只是在描述可能的问题，在尝试后总结出对于我的电脑适用的 Solution</p>
-<p>1、 禁用掉 bios 里的 security boot ，有的可能是灰色不可变的，不同的 bios 有不同的关闭方式，我的 bios 是需要设置超级用户的密码，设置完成后就能关闭 security boot 了</p>
-<p>2、在 Ubuntu 下使用下面命令查看显卡相关信息，我每次使用这两个命令后不久就卡死，每次都是强制关机。对磁盘损伤很大。<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lspci | grep -i vga</span><br><span class="line">lspci | grep -i 3d</span><br></pre></td></tr></table></figure></p>
-<p>3、使用下面命令，查找 N卡驱动并安装适合本系统的驱动，安装完后重启(此时如果依然卡死那就再强制重启)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ubuntu-drivers devices</span><br><span class="line">sudo ubuntu-drivers autoinstall</span><br></pre></td></tr></table></figure></p>
-<p>4、开机后会有一个 N卡的设置软件，此时系统默认使用的就是 N卡了。可以正常关机。</p>
-<h3 id="优化问题"><a href="#优化问题" class="headerlink" title="优化问题"></a>优化问题</h3><p>优化成自己熟悉的环境，下载 SS 、IDEA 等还有各种其他的环境，去看一下知乎上推荐<br>软件</p>
-]]></content>
-    
-    <summary type="html">
-    
-      Ubuntu 双系统装机问题
-    
-    </summary>
-    
-      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
-    
-    
-      <category term="效率" scheme="https://ahianzhang.com/tags/%E6%95%88%E7%8E%87/"/>
     
   </entry>
   

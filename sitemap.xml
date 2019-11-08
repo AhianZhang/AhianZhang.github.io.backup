@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ahianzhang.com/2019/10/08/object-oriented-mind/</loc>
+    
+    <lastmod>2019-11-08T11:47:35.097Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ahianzhang.com/2019/09/27/architecture-framework/</loc>
     
     <lastmod>2019-10-07T12:28:41.548Z</lastmod>
@@ -240,48 +247,6 @@
   </url>
   
   <url>
-    <loc>https://ahianzhang.com/2018/02/11/summary05/</loc>
-    
-    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ahianzhang.com/2018/08/20/summary07/</loc>
-    
-    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ahianzhang.com/2018/11/20/summary08/</loc>
-    
-    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ahianzhang.com/2018/01/30/summary03/</loc>
-    
-    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ahianzhang.com/2018/08/04/summary06/</loc>
-    
-    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ahianzhang.com/translate/index.html</loc>
-    
-    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://ahianzhang.com/2018/01/29/summary01/</loc>
     
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
@@ -289,21 +254,7 @@
   </url>
   
   <url>
-    <loc>https://ahianzhang.com/Donation/index.html</loc>
-    
-    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ahianzhang.com/gist/index.html</loc>
-    
-    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ahianzhang.com/rss/index.html</loc>
+    <loc>https://ahianzhang.com/2018/11/20/summary08/</loc>
     
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
     
@@ -318,6 +269,62 @@
   
   <url>
     <loc>https://ahianzhang.com/2018/01/30/summary04/</loc>
+    
+    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ahianzhang.com/gist/index.html</loc>
+    
+    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ahianzhang.com/2018/08/04/summary06/</loc>
+    
+    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ahianzhang.com/2018/01/30/summary03/</loc>
+    
+    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ahianzhang.com/Donation/index.html</loc>
+    
+    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ahianzhang.com/rss/index.html</loc>
+    
+    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ahianzhang.com/translate/index.html</loc>
+    
+    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ahianzhang.com/2018/08/20/summary07/</loc>
+    
+    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://ahianzhang.com/2018/02/11/summary05/</loc>
     
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
     
