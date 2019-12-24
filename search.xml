@@ -3,14 +3,6 @@
   
     
     <entry>
-      <title><![CDATA[rsocket-intro]]></title>
-      <url>/2019/12/10/rsocket-intro-1/</url>
-      <content type="html"></content>
-      
-        
-    </entry>
-    
-    <entry>
       <title><![CDATA[RSocket 介绍]]></title>
       <url>/2019/12/10/rsocket-intro/</url>
       <content type="html"><![CDATA[<p>RSocket 是一个新的通信协议， Facebook、Netfi、Pivotal、vlingo 等公司都有参与研发，它是一个位于传输层的新协议。在反应式编程中有两个瓶颈，一个是关系型数据库性能，一个是网络传输性能，对于数据库已经有<a href="https://r2dbc.io/" target="_blank" rel="noopener">r2dbc</a>开发，而网络问题则由 RScoket 解决，有人说 VaughnVernon 去 vlingo 做 RSocket 研究是为了解决领域驱动设计中上下文映射的问题（未求证）</p>
