@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>https://ahianzhang.com/2019/12/26/pair-programming/</loc>
+    <lastmod>2019-12-26T05:32:06.443Z</lastmod>
+    <data>
+        <display>
+        <title>结对编程</title>
+        <pubTime>2019-12-26T05:03:24.000Z</pubTime>
+        
+        <tag>极限编程</tag>
+         
+         
+           
+             
+              <breadCrumb title="XP" url="https://ahianzhang.com/categories/XP/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://ahianzhang.com/2019/12/10/rsocket-intro/</loc>
     <lastmod>2019-12-24T09:42:20.417Z</lastmod>
     <data>
@@ -743,12 +763,12 @@
 
     
   <url>
-    <loc>https://ahianzhang.com/2018/01/30/summary04/</loc>
+    <loc>https://ahianzhang.com/2018/01/30/summary03/</loc>
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
     <data>
         <display>
-        <title>项目总结 第二篇</title>
-        <pubTime>2018-01-30T14:41:20.000Z</pubTime>
+        <title>editor.md 富文本编辑器的使用</title>
+        <pubTime>2018-01-30T14:08:08.000Z</pubTime>
         
         <tag>项目总结</tag>
          
@@ -763,32 +783,12 @@
 
     
   <url>
-    <loc>https://ahianzhang.com/2018/08/04/summary06/</loc>
+    <loc>https://ahianzhang.com/2018/01/30/summary04/</loc>
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
     <data>
         <display>
-        <title>周总结（7.30-8.4）</title>
-        <pubTime>2018-08-04T12:52:20.000Z</pubTime>
-        
-        <tag>工作总结</tag>
-         
-         
-           
-             
-              <breadCrumb title="总结" url="https://ahianzhang.com/categories/%E6%80%BB%E7%BB%93/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://ahianzhang.com/2018/01/30/summary03/</loc>
-    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
-    <data>
-        <display>
-        <title>editor.md 富文本编辑器的使用</title>
-        <pubTime>2018-01-30T14:08:08.000Z</pubTime>
+        <title>项目总结 第二篇</title>
+        <pubTime>2018-01-30T14:41:20.000Z</pubTime>
         
         <tag>项目总结</tag>
          
@@ -823,12 +823,12 @@
 
     
   <url>
-    <loc>https://ahianzhang.com/2018/11/20/summary08/</loc>
+    <loc>https://ahianzhang.com/2018/08/04/summary06/</loc>
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
     <data>
         <display>
-        <title>总结</title>
-        <pubTime>2018-11-20T14:18:18.000Z</pubTime>
+        <title>周总结（7.30-8.4）</title>
+        <pubTime>2018-08-04T12:52:20.000Z</pubTime>
         
         <tag>工作总结</tag>
          
@@ -849,6 +849,26 @@
         <display>
         <title>周总结(8.13-8.19)</title>
         <pubTime>2018-08-19T16:15:43.000Z</pubTime>
+        
+        <tag>工作总结</tag>
+         
+         
+           
+             
+              <breadCrumb title="总结" url="https://ahianzhang.com/categories/%E6%80%BB%E7%BB%93/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://ahianzhang.com/2018/11/20/summary08/</loc>
+    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
+    <data>
+        <display>
+        <title>总结</title>
+        <pubTime>2018-11-20T14:18:18.000Z</pubTime>
         
         <tag>工作总结</tag>
          
