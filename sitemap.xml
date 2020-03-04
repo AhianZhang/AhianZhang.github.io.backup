@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ahianzhang.com/about/index.html</loc>
+    
+    <lastmod>2020-03-04T08:11:35.091Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ahianzhang.com/2019/12/26/pair-programming/</loc>
     
-    <lastmod>2019-12-26T05:32:06.443Z</lastmod>
+    <lastmod>2019-12-26T05:41:02.429Z</lastmod>
     
   </url>
   
@@ -40,13 +47,6 @@
     <loc>https://ahianzhang.com/2019/09/22/summary12/</loc>
     
     <lastmod>2019-09-22T08:28:22.693Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ahianzhang.com/about/index.html</loc>
-    
-    <lastmod>2019-09-20T03:32:51.221Z</lastmod>
     
   </url>
   

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://ahianzhang.com/"/>
-  <updated>2019-12-26T05:32:06.443Z</updated>
+  <updated>2019-12-26T05:41:02.429Z</updated>
   <id>https://ahianzhang.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://ahianzhang.com/2019/12/26/pair-programming/"/>
     <id>https://ahianzhang.com/2019/12/26/pair-programming/</id>
     <published>2019-12-26T05:03:24.000Z</published>
-    <updated>2019-12-26T05:32:06.443Z</updated>
+    <updated>2019-12-26T05:41:02.429Z</updated>
     
     <content type="html"><![CDATA[<p>在日常开发中常常在同一组内的成员虽然都负责同一个系统，但基本上是自己开发自己的，这样所带来的问题就是如果一个人请假了并且他负责模块出了问题急需解决，而此时团队的其他小伙伴要一点一点地扒代码，小心翼翼的闭坑，这应该是国内中小公司的常态。而结对编程恰好能解决这样的问题。</p>
 <p>结对编程来源于Extreme programming（XP），常常与 TDD 一同使用，对开发人员的要求较高，但是产出的代码质量也会提升，常用的结对编程有两种模式：</p>
@@ -32,7 +32,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;在日常开发中常常在同一组内的成员虽然都负责同一个系统，但基本上是自己开发自己的，这样所带来的问题就是如果一个人请假了并且他负责模块出了问题急需解决，而此时团队的其他小伙伴要一点一点地扒代码，小心翼翼的闭坑，这应该是国内中小公司的常态。而结对编程恰好能解决这样的问题。&lt;/p&gt;
+      本文会让你对结对编程有一个简单的认识
     
     </summary>
     
