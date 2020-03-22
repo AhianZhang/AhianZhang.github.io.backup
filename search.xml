@@ -3,6 +3,69 @@
   
     
     <entry>
+      <title><![CDATA[AMQ Model总结]]></title>
+      <url>/2020/03/21/rabbit-mq-basic-concept/</url>
+      <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近在写公司的消息队列组件，因为使用的是 RabbitMQ，其实现的规范是基于 AMQP-0-9-1 ，所以抽时间把官方的规范过了一遍，整理出主要的内容，记录于此。</p>
+<h1 id="AMQ-模型架构-AMQ-Model-Architecture"><a href="#AMQ-模型架构-AMQ-Model-Architecture" class="headerlink" title="AMQ 模型架构(AMQ Model Architecture)"></a>AMQ 模型架构(<strong>AMQ Model Architecture</strong>)</h1><h2 id="基础组件"><a href="#基础组件" class="headerlink" title="基础组件"></a>基础组件</h2><p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-21-091225.png" alt></p>
+<ul>
+<li>Publisher application 发送者</li>
+<li>Consumer application 消费者</li>
+<li>Server AMQP 服务器</li>
+<li>Virtual host 在 Server 中提供逻辑隔离，类似于 MySQL 数据库中的多个表</li>
+<li>Exchange 将消息根据不同的配置路由到不同队列</li>
+<li>Message Queue 存储消息的地方</li>
+</ul>
+<h2 id="消息流转"><a href="#消息流转" class="headerlink" title="消息流转"></a>消息流转</h2><p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-21-093617.png" alt></p>
+<p>从上图可看出，AMQP 的关键之处和难点在于 Exchange 是如何将不同的消息发送到不同的 Message Queue 中</p>
+<h2 id="消息的生命周期"><a href="#消息的生命周期" class="headerlink" title="消息的生命周期"></a>消息的生命周期</h2><p>在发送者发送消息和消费者确认消费，AMQP 将它们放在同一个事务中。</p>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-22-135505.png" alt></p>
+<h2 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h2><p>消息队列能将消息存到内存或者磁盘上，供消费者消费。它有几个主要的配置</p>
+<ul>
+<li>名称 name</li>
+<li>专用 exclusive： 随 channel 创建和销毁</li>
+<li>持久化 durable：broker 重启后能够恢复持久化的消息</li>
+</ul>
+<h3 id="队列生命周期"><a href="#队列生命周期" class="headerlink" title="队列生命周期"></a>队列生命周期</h3><ul>
+<li>持久化队列</li>
+<li>临时队列</li>
+</ul>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-22-140750.png" alt="临时队列生命周期"></p>
+<h2 id="交换机"><a href="#交换机" class="headerlink" title="交换机"></a>交换机</h2><p>交换机，根据预先设定的 bindings 规范进行匹配和路由，exchange 根据 bindings 的信息决定应该将消息发送到哪个 queue 或者 exchange，exchange 此模块不存储任何消息，对于使用时我们一般说的是交换机的类型，就像车，有火车、汽车、自行车等，而 exchange 有四种类型，下面介绍常用的三种。</p>
+<h3 id="direct"><a href="#direct" class="headerlink" title="direct"></a>direct</h3><p>AMQP 默认使用的是 direct 模式，此模式的特点是 routing key 和 bindings 必须匹配才能发送成功,如下图所示，如果 routing key 为 abc 的消息只能被 Consumer A 消费。</p>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-22-122824.png" alt></p>
+<h3 id="topic"><a href="#topic" class="headerlink" title="topic"></a>topic</h3><p>topic 模式可以说是 direct 的一种扩展，这个扩展支持使用通配符来进行路由，规则是 <strong>#</strong> 代表一个单词，<strong>*</strong> 代表多个单词，下图中的消息能够被 Consumer A 和 Consumer C 消费，而 Consumer B 所监听的队列绑定的是 a.* ，最多只能是两个字母，不匹配。</p>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-22-123935.png" alt></p>
+<h3 id="fanout"><a href="#fanout" class="headerlink" title="fanout"></a>fanout</h3><p>此模式也能叫做广播模式，此模式没有 routing key 的概念，发送方将消息发到 exchange 中，只要是有消息队列与之绑定就直接发送过去。</p>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-22-124807.png" alt></p>
+<h3 id="exchange-生命周期"><a href="#exchange-生命周期" class="headerlink" title="exchange 生命周期"></a>exchange 生命周期</h3><p>在 borker 启动时会创建内部的交换机，这些交换机无法删除，还有一种就是应用创建（官方觉得叫 声明 更好），声明一个私有的交换机，私有的交换机可以被删除，但是在实际使用时声明出来以后不会再删。</p>
+<h2 id="Routing-Key"><a href="#Routing-Key" class="headerlink" title="Routing Key"></a>Routing Key</h2><p>存在于发送者和 broker 之间，交换机会根据 routing key 将消息发送到对应的队列中。</p>
+<h2 id="Bindings"><a href="#Bindings" class="headerlink" title="Bindings"></a>Bindings</h2><p>Bindings 存在于 exchange 和 message queue 之间，用来告诉 exchange 应该将消息路由到哪个队列上。</p>
+<p>利用 bindings 可以实现</p>
+<ul>
+<li>共享队列(Shared Queue)：多个消费者监听同一个队列</li>
+<li>应答队列(Reply Queue)：应用不声明队列，由 broker 临时生成一个队列进行消费</li>
+<li>发布订阅队列(Pub/Sub Queue)：使用 topic 类型实现，结合 <code>bind()</code> 方法</li>
+</ul>
+<hr>
+<p>除了以上的 AMQ 模型外，AMQP 还有命令、传输、功能、技术架构，这些等有时间再看。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 协议 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> rabbitmq </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[结对编程]]></title>
       <url>/2019/12/26/pair-programming/</url>
       <content type="html"><![CDATA[<p>在日常开发中常常在同一组内的成员虽然都负责同一个系统，但基本上是自己开发自己的，这样所带来的问题就是如果一个人请假了并且他负责模块出了问题急需解决，而此时团队的其他小伙伴要一点一点地扒代码，小心翼翼的闭坑，这应该是国内中小公司的常态。而结对编程恰好能解决这样的问题。</p>
@@ -485,7 +548,7 @@
     </entry>
     
     <entry>
-      <title><![CDATA[leetcode206]]></title>
+      <title></title>
       <url>/2019/05/30/leetcode206/</url>
       <content type="html"><![CDATA[<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/Paper.Paper%20%E5%B7%A5%E5%85%B7.21.PNG?Expires=1559184132&amp;OSSAccessKeyId=TMP.AgFLVFCYpRjvpgIdC-LDRRj6JCUB1ibliK1ycCCtj7Nt9NMwsKoKWH9us7X_ADAtAhUAjHGJ_qlet9_nYP6iuQwqaskaZSgCFDTWqINtPo0YNfeemaYTBQbbaJCk&amp;Signature=G1UP5FAmXgyC45XdQ3xOU6DuY%2B8%3D" alt></p>
 <p><strong>Consideration</strong> </p>

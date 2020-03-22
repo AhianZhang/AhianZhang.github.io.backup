@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://ahianzhang.com/"/>
-  <updated>2019-12-26T05:41:02.429Z</updated>
+  <updated>2020-03-22T14:49:06.200Z</updated>
   <id>https://ahianzhang.com/</id>
   
   <author>
@@ -14,6 +14,71 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>AMQ Model总结</title>
+    <link href="https://ahianzhang.com/2020/03/21/rabbit-mq-basic-concept/"/>
+    <id>https://ahianzhang.com/2020/03/21/rabbit-mq-basic-concept/</id>
+    <published>2020-03-21T08:38:14.000Z</published>
+    <updated>2020-03-22T14:49:06.200Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近在写公司的消息队列组件，因为使用的是 RabbitMQ，其实现的规范是基于 AMQP-0-9-1 ，所以抽时间把官方的规范过了一遍，整理出主要的内容，记录于此。</p>
+<h1 id="AMQ-模型架构-AMQ-Model-Architecture"><a href="#AMQ-模型架构-AMQ-Model-Architecture" class="headerlink" title="AMQ 模型架构(AMQ Model Architecture)"></a>AMQ 模型架构(<strong>AMQ Model Architecture</strong>)</h1><h2 id="基础组件"><a href="#基础组件" class="headerlink" title="基础组件"></a>基础组件</h2><p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-21-091225.png" alt></p>
+<ul>
+<li>Publisher application 发送者</li>
+<li>Consumer application 消费者</li>
+<li>Server AMQP 服务器</li>
+<li>Virtual host 在 Server 中提供逻辑隔离，类似于 MySQL 数据库中的多个表</li>
+<li>Exchange 将消息根据不同的配置路由到不同队列</li>
+<li>Message Queue 存储消息的地方</li>
+</ul>
+<h2 id="消息流转"><a href="#消息流转" class="headerlink" title="消息流转"></a>消息流转</h2><p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-21-093617.png" alt></p>
+<p>从上图可看出，AMQP 的关键之处和难点在于 Exchange 是如何将不同的消息发送到不同的 Message Queue 中</p>
+<h2 id="消息的生命周期"><a href="#消息的生命周期" class="headerlink" title="消息的生命周期"></a>消息的生命周期</h2><p>在发送者发送消息和消费者确认消费，AMQP 将它们放在同一个事务中。</p>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-22-135505.png" alt></p>
+<h2 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h2><p>消息队列能将消息存到内存或者磁盘上，供消费者消费。它有几个主要的配置</p>
+<ul>
+<li>名称 name</li>
+<li>专用 exclusive： 随 channel 创建和销毁</li>
+<li>持久化 durable：broker 重启后能够恢复持久化的消息</li>
+</ul>
+<h3 id="队列生命周期"><a href="#队列生命周期" class="headerlink" title="队列生命周期"></a>队列生命周期</h3><ul>
+<li>持久化队列</li>
+<li>临时队列</li>
+</ul>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-22-140750.png" alt="临时队列生命周期"></p>
+<h2 id="交换机"><a href="#交换机" class="headerlink" title="交换机"></a>交换机</h2><p>交换机，根据预先设定的 bindings 规范进行匹配和路由，exchange 根据 bindings 的信息决定应该将消息发送到哪个 queue 或者 exchange，exchange 此模块不存储任何消息，对于使用时我们一般说的是交换机的类型，就像车，有火车、汽车、自行车等，而 exchange 有四种类型，下面介绍常用的三种。</p>
+<h3 id="direct"><a href="#direct" class="headerlink" title="direct"></a>direct</h3><p>AMQP 默认使用的是 direct 模式，此模式的特点是 routing key 和 bindings 必须匹配才能发送成功,如下图所示，如果 routing key 为 abc 的消息只能被 Consumer A 消费。</p>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-22-122824.png" alt></p>
+<h3 id="topic"><a href="#topic" class="headerlink" title="topic"></a>topic</h3><p>topic 模式可以说是 direct 的一种扩展，这个扩展支持使用通配符来进行路由，规则是 <strong>#</strong> 代表一个单词，<strong>*</strong> 代表多个单词，下图中的消息能够被 Consumer A 和 Consumer C 消费，而 Consumer B 所监听的队列绑定的是 a.* ，最多只能是两个字母，不匹配。</p>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-22-123935.png" alt></p>
+<h3 id="fanout"><a href="#fanout" class="headerlink" title="fanout"></a>fanout</h3><p>此模式也能叫做广播模式，此模式没有 routing key 的概念，发送方将消息发到 exchange 中，只要是有消息队列与之绑定就直接发送过去。</p>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-22-124807.png" alt></p>
+<h3 id="exchange-生命周期"><a href="#exchange-生命周期" class="headerlink" title="exchange 生命周期"></a>exchange 生命周期</h3><p>在 borker 启动时会创建内部的交换机，这些交换机无法删除，还有一种就是应用创建（官方觉得叫 声明 更好），声明一个私有的交换机，私有的交换机可以被删除，但是在实际使用时声明出来以后不会再删。</p>
+<h2 id="Routing-Key"><a href="#Routing-Key" class="headerlink" title="Routing Key"></a>Routing Key</h2><p>存在于发送者和 broker 之间，交换机会根据 routing key 将消息发送到对应的队列中。</p>
+<h2 id="Bindings"><a href="#Bindings" class="headerlink" title="Bindings"></a>Bindings</h2><p>Bindings 存在于 exchange 和 message queue 之间，用来告诉 exchange 应该将消息路由到哪个队列上。</p>
+<p>利用 bindings 可以实现</p>
+<ul>
+<li>共享队列(Shared Queue)：多个消费者监听同一个队列</li>
+<li>应答队列(Reply Queue)：应用不声明队列，由 broker 临时生成一个队列进行消费</li>
+<li>发布订阅队列(Pub/Sub Queue)：使用 topic 类型实现，结合 <code>bind()</code> 方法</li>
+</ul>
+<hr>
+<p>除了以上的 AMQ 模型外，AMQP 还有命令、传输、功能、技术架构，这些等有时间再看。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      关于 AMQP 0-9-1 中的 AMQ 模型架构知识整理
+    
+    </summary>
+    
+      <category term="协议" scheme="https://ahianzhang.com/categories/%E5%8D%8F%E8%AE%AE/"/>
+    
+    
+      <category term="rabbitmq" scheme="https://ahianzhang.com/tags/rabbitmq/"/>
+    
+  </entry>
   
   <entry>
     <title>结对编程</title>
@@ -530,11 +595,11 @@
   </entry>
   
   <entry>
-    <title>leetcode206</title>
+    <title></title>
     <link href="https://ahianzhang.com/2019/05/30/leetcode206/"/>
     <id>https://ahianzhang.com/2019/05/30/leetcode206/</id>
     <published>2019-05-30T01:43:49.000Z</published>
-    <updated>2019-05-30T03:57:16.000Z</updated>
+    <updated>2020-03-21T08:38:27.305Z</updated>
     
     <content type="html"><![CDATA[<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/Paper.Paper%20%E5%B7%A5%E5%85%B7.21.PNG?Expires=1559184132&amp;OSSAccessKeyId=TMP.AgFLVFCYpRjvpgIdC-LDRRj6JCUB1ibliK1ycCCtj7Nt9NMwsKoKWH9us7X_ADAtAhUAjHGJ_qlet9_nYP6iuQwqaskaZSgCFDTWqINtPo0YNfeemaYTBQbbaJCk&amp;Signature=G1UP5FAmXgyC45XdQ3xOU6DuY%2B8%3D" alt></p>
 <p><strong>Consideration</strong> </p>
@@ -753,46 +818,6 @@
     
     
       <category term="ElasticSearch" scheme="https://ahianzhang.com/tags/ElasticSearch/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>技术选型怎么做</title>
-    <link href="https://ahianzhang.com/2019/05/23/technology-choice/"/>
-    <id>https://ahianzhang.com/2019/05/23/technology-choice/</id>
-    <published>2019-05-23T02:44:21.000Z</published>
-    <updated>2019-05-28T03:51:46.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="技术选型包括哪些"><a href="#技术选型包括哪些" class="headerlink" title="技术选型包括哪些"></a>技术选型包括哪些</h1><p>从个人观点出发，技术选型包括框架、工具、语言。</p>
-<h1 id="需要考虑的点"><a href="#需要考虑的点" class="headerlink" title="需要考虑的点"></a>需要考虑的点</h1><ul>
-<li>公司规模</li>
-<li>团队技术水平</li>
-<li>时间和成本</li>
-<li>生态</li>
-<li>风险</li>
-</ul>
-<h2 id="公司规模"><a href="#公司规模" class="headerlink" title="公司规模"></a>公司规模</h2><h3 id="小公司"><a href="#小公司" class="headerlink" title="小公司"></a>小公司</h3><p>对于初创公司或者小公司来讲，上级领导的意愿更多的是能够快速盈利，此时应该选择<strong>成熟便捷的框架</strong>，<br>尽量减少学习成本，这就属于经验优先，因为只有做出成品并且盈利，公司才能够生存。</p>
-<h3 id="中型公司"><a href="#中型公司" class="headerlink" title="中型公司"></a>中型公司</h3><p>中型公司是由小公司慢慢发展的，此时技术有了一定的积累，并且也有能力自己去做一些定制化的开发，此时需要考虑的问题是<strong>自己开发还是使用现有产品</strong> </p>
-<p>举个例子：目前公司内部需要搭建一套日志收集和监控系统，该怎么做？<br>         很多人最先想到的是 ELK ，但这样是不可以的，选型的话你要了解市场上都有哪些日志的框架，结合实际的项目，找到最方便的那一个，不能说 ELK 用的人多你就用，项目部署在阿里云，那使用阿里云的日志服务是不是更方便快捷？</p>
-<h3 id="大型公司"><a href="#大型公司" class="headerlink" title="大型公司"></a>大型公司</h3><p>大型公司就比较随意了，可能会花很长时间很多精力放在自研上</p>
-<h2 id="团队技术水平"><a href="#团队技术水平" class="headerlink" title="团队技术水平"></a>团队技术水平</h2><p>如果一个技术恰好能够解决当前遇到的问题或者在重构时能够解决性能的瓶颈，但是，它可能是用 GO 语言写的，而团队用的是 Java，此时需要考虑的是如果引进来了，那么能够多久能上手呢？之前看到某公司招聘的 JD ，如果你自认为可以在一周内精通领域，那么上述的要求可以不用遵循。所以在面试新人时就需要从多维度去考察，在此不细说；如果成员已经确定但是技术水平不高，那么你就需要如何去提升团队的技术水平。</p>
-<h2 id="时间和成本"><a href="#时间和成本" class="headerlink" title="时间和成本"></a>时间和成本</h2><p>记住，如果你在公司工作，那你就是给别人打工的，你的职责就是让企业赚钱，领导不会关心你用什么技术，但他能知道你用多久去把业务实现，此时你需要考虑什么？理想状态是时间短高收益，这需要借助二八原则，用百分之二十的成本带来百分之八十的收益。</p>
-<p>举个例子：领导规定三天时间日志服务搭起来，并且上生产环境，如果你用 ELK 那你需要很多配置，如果你用云产品，直接集成就能用。有人可能会想，用云产品不是得花很多钱吗？我最初也是这样想，但后来我是这样想，首先钱不用你出，而且你自己搭的 ELK 后期维护消耗多少算过没有，和你云服务比一比看看哪个多。</p>
-<h2 id="风险"><a href="#风险" class="headerlink" title="风险"></a>风险</h2><p>风险其实一般很难发现的，比如安全问题，只有漏洞报出来你才会知道，还有就是有 BUG 但项目不维护了，这就是最后要讲的生态。</p>
-<h2 id="生态"><a href="#生态" class="headerlink" title="生态"></a>生态</h2><p>一个好的项目不是看多少人用，而是有一个成熟的社区，你提问题有人及时回，你提建议或者 BUG 开发人员会跟进，采纳后会加入下次发版，这比你遇到问题后去提 issue 人家不回你，问别人也不清楚，这样就是一次失败的选型。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>技术选型离不开业务，脱离了业务你的技术再高也将无法体现。选型重要的还是选择问题，这能映射成生活，权衡一件事，要从多个角度去思考。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      技术选型要结合实际的环境
-    
-    </summary>
-    
-      <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
-    
-    
-      <category term="技术" scheme="https://ahianzhang.com/tags/%E6%8A%80%E6%9C%AF/"/>
     
   </entry>
   
