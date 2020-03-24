@@ -17,7 +17,7 @@
 </ul>
 <h2 id="消息流转"><a href="#消息流转" class="headerlink" title="消息流转"></a>消息流转</h2><p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-21-093617.png" alt></p>
 <p>从上图可看出，AMQP 的关键之处和难点在于 Exchange 是如何将不同的消息发送到不同的 Message Queue 中</p>
-<h2 id="消息的生命周期"><a href="#消息的生命周期" class="headerlink" title="消息的生命周期"></a>消息的生命周期</h2><p>在发送者发送消息和消费者确认消费，AMQP 将它们放在同一个事务中。</p>
+<h2 id="消息的生命周期"><a href="#消息的生命周期" class="headerlink" title="消息的生命周期"></a>消息的生命周期</h2><p>在发送者发送消息和消费者确认消费，对于如何保证消息的可靠性，在 RabbitMQ 中有两种方式，一种是放到同一个事务中处理，但是这种方式对于并发量不大的可以使用，保证了准确性，但是牺牲了性能；还有一种是轻量级的通过 confirm 去异步确认，这部分以后会单独写出来。</p>
 <p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-22-135505.png" alt></p>
 <h2 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h2><p>消息队列能将消息存到内存或者磁盘上，供消费者消费。它有几个主要的配置</p>
 <ul>
