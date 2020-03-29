@@ -3,6 +3,99 @@
   
     
     <entry>
+      <title><![CDATA[rabbitmq 如何提高可靠性并保证消费端幂等]]></title>
+      <url>/2020/03/29/rabbitmq-reliability/</url>
+      <content type="html"><![CDATA[<h1 id="什么是消息的可靠性"><a href="#什么是消息的可靠性" class="headerlink" title="什么是消息的可靠性"></a>什么是消息的可靠性</h1><p>简单讲就是，一条消息由生产者发送出来，到 broker 上，存储到消息队列，再被消费者成功的消费。如果消息传着传着就传没了，此时消息就是不可靠的。</p>
+<h1 id="为什么要提高消息可靠性"><a href="#为什么要提高消息可靠性" class="headerlink" title="为什么要提高消息可靠性"></a>为什么要提高消息可靠性</h1><p>拿订单或者交易举例，但凡涉及到与钱相关的系统，不允许出现任何数据偏差，如果因为在使用消息队列而丢失了数据，那这算是一个重大事故，好比你申请了几万元的退款，但是后台在发消息的时候恰好把你的这条退款消息丢了，还得去打客服电话，虽然钱不会少但是心里肯定会不爽。</p>
+<h1 id="如何提高消息的可靠性"><a href="#如何提高消息的可靠性" class="headerlink" title="如何提高消息的可靠性"></a>如何提高消息的可靠性</h1><p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-03-29-103429.png" alt="image-20200329183426043"></p>
+<p>提高消息消息可靠性需要考虑什么情况下消息会丢失，如上图，可以分三个部分来讲（排除一些非正常的使用，比如说删队列、删交换机这样的）</p>
+<h2 id="A：publisher-到-broker-之间可能出现的情况"><a href="#A：publisher-到-broker-之间可能出现的情况" class="headerlink" title="A：publisher 到 broker 之间可能出现的情况"></a>A：publisher 到 broker 之间可能出现的情况</h2><ul>
+<li>消息发出去后网络出问题，没到 broker上</li>
+<li>消息到达 broker 后没有对应的 exchange</li>
+<li>消息到 exchange 后没有与之绑定的队列</li>
+<li>生产者发送完消息后重启（不影响可靠性）</li>
+</ul>
+<h2 id="B-broker-可能出现的情况"><a href="#B-broker-可能出现的情况" class="headerlink" title="B: broker 可能出现的情况"></a>B: broker 可能出现的情况</h2><ul>
+<li>broker 宕机情况</li>
+</ul>
+<h2 id="C-broker-到-consumer-可能出现的情况"><a href="#C-broker-到-consumer-可能出现的情况" class="headerlink" title="C: broker 到 consumer  可能出现的情况"></a>C: broker 到 consumer  可能出现的情况</h2><ul>
+<li>消费者应用刚要处理消息，结果就重启了</li>
+</ul>
+<h2 id="处理"><a href="#处理" class="headerlink" title="处理"></a>处理</h2><h3 id="针对-A-情况"><a href="#针对-A-情况" class="headerlink" title="针对 A 情况"></a>针对 A 情况</h3><p>官网提供两种确保消费者成功投递的方式，一种是使用<strong>事务</strong>，一种是使用 <strong>confirm 机制</strong>。对于具体如果使用本文不做展开，开启事务是一种昂贵的操作，官方建议使用 confirm 机制，能比事务机制快上 10倍左右，对于 confirm，一般使用 Spring AMQP 中的 ConfirmCallback 来实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ConfirmCallback</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Confirmation callback.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> correlationData correlation data for the callback.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> ack true for ack, false for nack</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> cause An optional cause, for nack, when available, otherwise null.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">confirm</span><span class="params">(@Nullable CorrelationData correlationData, <span class="keyword">boolean</span> ack, @Nullable String cause)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中 CorrelationData 是在发送端发送消息时一并发送的，里面有一个不可变的唯一 id，在 confirm 中尤为重要，可以利用它实现补偿机制。</p>
+<p>Confirm 机制能够保证消息到达 broker 上并且<strong>有对应的交换机</strong>，但是不能保证是否路由到队列，此时就需要 ReturnCallback 来实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ReturnCallback</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Returned message callback.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> message the returned message.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> replyCode the reply code.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> replyText the reply text.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> exchange the exchange.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> routingKey the routing key.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">returnedMessage</span><span class="params">(Message message, <span class="keyword">int</span> replyCode, String replyText,</span></span></span><br><span class="line"><span class="function"><span class="params">			String exchange, String routingKey)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>消息到不了队列，就没法存储，此时会发生三种情况：</p>
+<ol>
+<li><p>直接丢弃</p>
+</li>
+<li><p>重新发送</p>
+</li>
+<li><p>转到另一个交换机上</p>
+</li>
+</ol>
+<p>方式1，一般使用时不会采取直接丢弃的方式，风险较大</p>
+<p>对于方式2，要配置 <strong>Mandatory</strong> 为 true，告诉 broker 说如果交换机找不到匹配的队列得把消息再返回给生产者。如果为 false 那就是第1种情况，此时需要注意重试的次数和方式，不能连续发送，需要留出异常的处理时间，比如重试三次，间隔5秒。</p>
+<p>方式3，这是 rabbitmq 的一个功能，称为备份交换机（alternate-exchange），是在创建正常的交换机时追加一个 <code>alternate-exchange=&quot;XXX&quot;</code>的参数，XXX 为另一个交换机，接收无法路由的消息。</p>
+<p>可能有人会发现，当消息无法路由到队列中，此时 ConfirmCallback 返回的 ack 为 true ，在这可能会有很多困惑，此处列出几种情况：</p>
+<ul>
+<li>消息投递到 exchange，触发 confirmCallback，成功为 true , 失败为 false（例如 exchange 不存在）</li>
+<li>Exchange 无法路由到队列，此时触发 returnCallback 打印错误信息，再触发 confirmCallback，此时 <strong>ack = true</strong></li>
+<li>消息正常路由到队列，只会触发 confirmCallback </li>
+</ul>
+<p>上面几种情况是针对于 Spring 实现的两个监听器，RabbitMQ 官方客户端实现可能不同。</p>
+<p>对于发送者来说，消息到了 exchange 其实它的任务就已经完成了。</p>
+<h3 id="针对-B-情况"><a href="#针对-B-情况" class="headerlink" title="针对 B 情况"></a>针对 B 情况</h3><p>此时我们说的主要是 broker 中的队列，因为 broker 中只有队列有存储功能，此时要保证队列的可靠性，需要设置持久化，能够保证 broker 重启后自动恢复数据。</p>
+<ol>
+<li>设置 exchange 持久化</li>
+<li>声明队列时设置为持久化队列，这样能保证队列自身能够恢复（不包括里面的消息）</li>
+<li>对消息设置 deliveryMode.PERSISTENT（默认，不需要改）</li>
+</ol>
+<p>搭配 publisher confirm 机制可以确保消息写到磁盘上以后才触发 confirmCallback，能够保证消息不丢失。</p>
+<h3 id="针对-C-情况"><a href="#针对-C-情况" class="headerlink" title="针对 C 情况"></a>针对 C 情况</h3><p>大多数同学可能会对消费端 ack 比较熟，对于 Spring 环境来说，设置消费者手动 ack，broker 收到消费者 ack 后删除消息或者 nack 继续消费。</p>
+<h1 id="消息补偿机制"><a href="#消息补偿机制" class="headerlink" title="消息补偿机制"></a>消息补偿机制</h1><p>此处的实现思路为：</p>
+<ol>
+<li>发送端创建 CorrelationData 对象跟随消息一同发送</li>
+<li>将CorrelationData中的 id 作为key，发送的消息体为 value，存到本地缓存</li>
+<li>当 confirm ack 为 true 时说明发送成功，根据返回的 CorrelationData id 将缓存中的对应数据删除</li>
+<li>当 confirm ack 为 fasle 时说明失败了，此时根据 CorrelationData id 在缓存中拿到对应的消息重新发送</li>
+<li>ReturnCallback 的重试机制在上面已经写出</li>
+</ol>
+<h1 id="消息幂等操作"><a href="#消息幂等操作" class="headerlink" title="消息幂等操作"></a>消息幂等操作</h1><p>生产端为了保证消息在投递过程中不丢失，会对一条消息多次重试，消费端没有手动 ack 导致重复消费，这些算是消息重复投递，在可靠性机制上无法避免，此时需要考虑如何多次处理同一条消息但是产生同样效果，即幂等。</p>
+<p>保证幂等的方式因为业务的不同实现方式也不同，可以用 redis，可以用数据库主键，一个简单的思路：</p>
+<ol>
+<li><p>消费端获取消息的 MessageId 当作 key</p>
+</li>
+<li><p>消息内容当作 value</p>
+</li>
+<li><p>放到合适的容器中</p>
+<p>拿 Map 举例，id 为 123 的消息，消费之前看 map 中是否存在 key=123，如果有的话跳过，没有的话处理消息并添加到map中。</p>
+</li>
+</ol>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.rabbitmq.com/blog/2011/02/10/introducing-publisher-confirms/" target="_blank" rel="noopener">https://www.rabbitmq.com/blog/2011/02/10/introducing-publisher-confirms/</a></p>
+<p><a href="https://www.jianshu.com/p/6579e48d18ae" target="_blank" rel="noopener">https://www.jianshu.com/p/6579e48d18ae</a></p>
+<p><a href="https://blog.51cto.com/4925054/2095467" target="_blank" rel="noopener">https://blog.51cto.com/4925054/2095467</a></p>
+<p><a href="https://www.jianshu.com/p/8b77d4583bab" target="_blank" rel="noopener">https://www.jianshu.com/p/8b77d4583bab</a></p>
+<p><a href="http://www.throwable.club/2018/11/25/rabbitmq-send-consume-confirm/" target="_blank" rel="noopener">http://www.throwable.club/2018/11/25/rabbitmq-send-consume-confirm/</a></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 架构 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> rabbitmq </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[AMQ Model总结]]></title>
       <url>/2020/03/21/rabbit-mq-basic-concept/</url>
       <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近在写公司的消息队列组件，因为使用的是 RabbitMQ，其实现的规范是基于 AMQP-0-9-1 ，所以抽时间把官方的规范过了一遍，整理出主要的内容，记录于此。</p>

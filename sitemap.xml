@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ahianzhang.com/2020/03/29/rabbitmq-reliability/</loc>
+    
+    <lastmod>2020-03-29T15:10:54.531Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ahianzhang.com/2020/03/21/rabbit-mq-basic-concept/</loc>
     
     <lastmod>2020-03-24T02:51:13.067Z</lastmod>
@@ -275,6 +282,13 @@
   </url>
   
   <url>
+    <loc>https://ahianzhang.com/2018/01/30/summary02/</loc>
+    
+    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ahianzhang.com/2018/01/30/summary03/</loc>
     
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
@@ -289,14 +303,14 @@
   </url>
   
   <url>
-    <loc>https://ahianzhang.com/2018/01/30/summary02/</loc>
+    <loc>https://ahianzhang.com/2018/02/11/summary05/</loc>
     
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://ahianzhang.com/2018/02/11/summary05/</loc>
+    <loc>https://ahianzhang.com/2018/08/04/summary06/</loc>
     
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
     
@@ -311,13 +325,6 @@
   
   <url>
     <loc>https://ahianzhang.com/2018/08/20/summary07/</loc>
-    
-    <lastmod>2019-05-06T02:09:52.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://ahianzhang.com/2018/08/04/summary06/</loc>
     
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
     
