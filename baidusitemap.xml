@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>https://ahianzhang.com/2020/05/08/devops-01/</loc>
+    <lastmod>2020-05-19T11:47:46.243Z</lastmod>
+    <data>
+        <display>
+        <title>DevOps 实施规划（持续更新）</title>
+        <pubTime>2020-05-08T01:12:16.000Z</pubTime>
+        
+        <tag>计划</tag>
+         
+         
+           
+             
+              <breadCrumb title="DevOps" url="https://ahianzhang.com/categories/DevOps/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://ahianzhang.com/2020/03/29/rabbitmq-reliability/</loc>
     <lastmod>2020-03-29T15:10:54.531Z</lastmod>
     <data>
@@ -883,12 +903,12 @@
 
     
   <url>
-    <loc>https://ahianzhang.com/2018/11/20/summary08/</loc>
+    <loc>https://ahianzhang.com/2018/08/20/summary07/</loc>
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
     <data>
         <display>
-        <title>总结</title>
-        <pubTime>2018-11-20T14:18:18.000Z</pubTime>
+        <title>周总结(8.13-8.19)</title>
+        <pubTime>2018-08-19T16:15:43.000Z</pubTime>
         
         <tag>工作总结</tag>
          
@@ -903,12 +923,12 @@
 
     
   <url>
-    <loc>https://ahianzhang.com/2018/08/20/summary07/</loc>
+    <loc>https://ahianzhang.com/2018/11/20/summary08/</loc>
     <lastmod>2019-05-06T02:09:52.000Z</lastmod>
     <data>
         <display>
-        <title>周总结(8.13-8.19)</title>
-        <pubTime>2018-08-19T16:15:43.000Z</pubTime>
+        <title>总结</title>
+        <pubTime>2018-11-20T14:18:18.000Z</pubTime>
         
         <tag>工作总结</tag>
          
