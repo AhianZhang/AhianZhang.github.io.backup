@@ -14,7 +14,7 @@
     
   </author>
   
-  <generator uri="http://hexo.io/">Hexo</generator>
+  <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
     <title>macOS 系统推荐的一些软件</title>
@@ -30,6 +30,7 @@
       在 Mac 下尝试过很多的软件，下面列出的都是我个人感觉不错的软件
     
     </summary>
+    
     
       <category term="总结" scheme="https://ahianzhang.com/categories/%E6%80%BB%E7%BB%93/"/>
     
@@ -53,6 +54,7 @@
     
     </summary>
     
+    
       <category term="DevOps" scheme="https://ahianzhang.com/categories/DevOps/"/>
     
     
@@ -74,6 +76,7 @@
       rabbitmq 如何保证消息不丢失
     
     </summary>
+    
     
       <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
     
@@ -97,6 +100,7 @@
     
     </summary>
     
+    
       <category term="协议" scheme="https://ahianzhang.com/categories/%E5%8D%8F%E8%AE%AE/"/>
     
     
@@ -118,6 +122,7 @@
       本文会让你对结对编程有一个简单的认识
     
     </summary>
+    
     
       <category term="XP" scheme="https://ahianzhang.com/categories/XP/"/>
     
@@ -141,6 +146,7 @@
     
     </summary>
     
+    
       <category term="协议" scheme="https://ahianzhang.com/categories/%E5%8D%8F%E8%AE%AE/"/>
     
     
@@ -162,6 +168,7 @@
       对于面向对象，一直处于背书的状态，直到最近接触到底层设计才发现 OO 思想在 Java 语言中的重要性
     
     </summary>
+    
     
       <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
     
@@ -185,6 +192,7 @@
     
     </summary>
     
+    
       <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
     
     
@@ -206,6 +214,7 @@
       创业主要在于创新
     
     </summary>
+    
     
       <category term="总结" scheme="https://ahianzhang.com/categories/%E6%80%BB%E7%BB%93/"/>
     
@@ -229,6 +238,7 @@
     
     </summary>
     
+    
       <category term="总结" scheme="https://ahianzhang.com/categories/%E6%80%BB%E7%BB%93/"/>
     
     
@@ -250,6 +260,7 @@
       2018.8.1-2019.8.1
     
     </summary>
+    
     
       <category term="总结" scheme="https://ahianzhang.com/categories/%E6%80%BB%E7%BB%93/"/>
     
@@ -273,6 +284,7 @@
     
     </summary>
     
+    
       <category term="DDD" scheme="https://ahianzhang.com/categories/DDD/"/>
     
     
@@ -294,6 +306,7 @@
       Java 语言中常用的开发工具
     
     </summary>
+    
     
       <category term="TDD" scheme="https://ahianzhang.com/categories/TDD/"/>
     
@@ -317,6 +330,7 @@
     
     </summary>
     
+    
       <category term="搜索" scheme="https://ahianzhang.com/categories/%E6%90%9C%E7%B4%A2/"/>
     
     
@@ -339,6 +353,7 @@
     
     </summary>
     
+    
       <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
     
     
@@ -358,6 +373,7 @@
       叙述自己目前对 query 改写的一些认知
     
     </summary>
+    
     
       <category term="搜索" scheme="https://ahianzhang.com/categories/%E6%90%9C%E7%B4%A2/"/>
     
@@ -381,6 +397,7 @@
     
     </summary>
     
+    
       <category term="总结" scheme="https://ahianzhang.com/categories/%E6%80%BB%E7%BB%93/"/>
     
     
@@ -402,6 +419,7 @@
       概览操作系统的作用
     
     </summary>
+    
     
       <category term="架构" scheme="https://ahianzhang.com/categories/%E6%9E%B6%E6%9E%84/"/>
     
@@ -425,6 +443,7 @@
     
     </summary>
     
+    
       <category term="算法" scheme="https://ahianzhang.com/categories/%E7%AE%97%E6%B3%95/"/>
     
     
@@ -446,6 +465,7 @@
       汉明码类的题，使用异或、与、移位进行操作
     
     </summary>
+    
     
       <category term="算法" scheme="https://ahianzhang.com/categories/%E7%AE%97%E6%B3%95/"/>
     
