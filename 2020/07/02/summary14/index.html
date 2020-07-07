@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="学习、思考、记录"><title>通过一道数值转换题重温计算机补码 | 象帝浮华生</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-151513812-1','auto');ga('send','pageview');</script><meta name="generator" content="Hexo 4.2.1"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">通过一道数值转换题重温计算机补码</h1><a id="logo" href="/.">象帝浮华生</a><p class="description">大道至简</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/gist/"><i class="fa fa-github"> Gist</i></a><a href="/rss"><i class="fa fa-rss"> 订阅</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">通过一道数值转换题重温计算机补码</h1><div class="post-meta">Jul 2, 2020<span> | </span><span class="category"><a href="/categories/%E6%80%BB%E7%BB%93/">总结</a></span></div><a data-disqus-identifier="2020/07/02/summary14/" href="/2020/07/02/summary14/#disqus_thread" class="disqus-comment-count"></a><div class="post-content"><h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>昨天同事和我聊了他偶然间看到的一道面试题，引出了后面的深入分析。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(Integer.valueOf((<span class="keyword">char</span>)-<span class="number">1</span>)); <span class="comment">//output: 65535</span></span><br></pre></td></tr></table></figure>
+
+<p>为什么输出是 65535 而不是 -1 呢？</p>
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>先回顾一下计算机相关的知识点：</p>
+<p>原码(True form)</p>
+<blockquote>
+<p>原码是指一个<a href="https://zh.wikipedia.org/wiki/二进制" target="_blank" rel="noopener">二进制</a>数左边加上符号位后所得到的码，且当二进制数大于0时，符号位为0；二进制数小于0时，符号位为1；二进制数等于0时，符号位可以为0或1(+0/-0)。 –维基百科</p>
+</blockquote>
+<p>原码根据符号位能很直观的看出是正数还是负数，但是对于计算机运算来说却不是那么好用了，比如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 求解: 1 + (-1) </span></span><br><span class="line">---</span><br><span class="line">站在人类的视角会立马得出 1 + (-1) = 0 的结论</span><br><span class="line">---</span><br><span class="line">而计算机的角度(假设长度是8-bit)：</span><br><span class="line">转换成二进制并相加：</span><br><span class="line">  00000001</span><br><span class="line">+ 10000001</span><br><span class="line"> ----------</span><br><span class="line">  10000010</span><br><span class="line"> </span><br><span class="line">这个结果是：-2，与正确值不符</span><br></pre></td></tr></table></figure>
+
+<p>所以如果有负数使用了原码运算，那还得把符号位撇开，这就增加了使用成本，为了解决这个问题就出现了反码。</p>
+<hr>
+<p>反码(ones’ complement)，也叫<strong>一的补码</strong></p>
+<blockquote>
+<p>将<a href="https://zh.wikipedia.org/wiki/二进制" target="_blank" rel="noopener">二进制</a>数每个数字反转，得到的数即为原二进制的<strong>一的补码</strong>（英语：ones’ complement）。若某一位为0，则使其变为1，反之亦然。</p>
+<ul>
+<li>一的补码以有符号比特的二进制数定义。</li>
+<li>一的补码是有符号比特的二进制数。</li>
+<li>正数和0的一的补码就是该数字本身。–维基百科</li>
+</ul>
+</blockquote>
+<p>反码能解决负数运算的问题吗，可以，但是又会出现<strong>负零</strong>和<strong>循环进位</strong>的问题。举例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 求解  1 + (-1)</span></span><br><span class="line">---</span><br><span class="line">转换成二进制并取反相加</span><br><span class="line">  00000001 (正数的反码是它本身)</span><br><span class="line">+ 11111110 (符号位不变其余取反)</span><br><span class="line">------------</span><br><span class="line">  11111111 </span><br><span class="line">转换成原码为：100000000 = -0</span><br></pre></td></tr></table></figure>
+
+<p>对于 0 来说正负并没有意义, 而且还会有反码 0000 0000 和 1111 1111 这两种 0 的表现形式，在使用反码运算时判断是否为 0 还需要考虑这两种情况，为了解决这个问题就又出现了补码。</p>
+<hr>
+<p>补码(2’s complement)</p>
+<blockquote>
+<p>正数和0的补码就是该数字本身。负数的补码则是将其对应正数按位取反再加1。</p>
+<p>补码系统的最大优点是可以在<a href="https://zh.wikipedia.org/wiki/加法" target="_blank" rel="noopener">加法</a>或<a href="https://zh.wikipedia.org/wiki/減法" target="_blank" rel="noopener">减法</a>处理中，不需因为数字的正负而使用不同的计算方式。只要一种加法电路就可以处理各种有号数加法，而且减法可以用一个数加上另一个数的补码来表示，因此只要有加法电路及补码电路即可完成各种有号数加法及减法，在电路设计上相当方便。</p>
+<p>另外，补码系统的0就只有一个表示方式，这和<a href="https://zh.wikipedia.org/wiki/一補數" target="_blank" rel="noopener">反码</a>系统不同（在反码系统中，0有二种表示方式），因此在判断数字是否为0时，只要比较一次即可  –维基百科</p>
+</blockquote>
+<p>补码有一个原则：<strong>数字a的补码为 -a</strong>，举例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> a = -5,那么 a 的补码为 5</span></span><br><span class="line">10000101  # -5 的原码</span><br><span class="line">11111010  # -5 的反码</span><br><span class="line">11111011  # -5 的补码</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h1><p>上面的问题可以拆分成下面的代码便于分析</p>
+<p>![image-20200707094407456](/Users/ahianzhang/Library/Application Support/typora-user-images/image-20200707094407456.png)</p>
+<p>int(32-bit) 转 char(16-bit) 会失去精度 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1000 0000 0000 0000 0000 0000 0000 0001   #int -1 的原码</span><br><span class="line">1111 1111 1111 1111 1111 1111 1111 1111   #int -1 的补码(内存中的数值用补码表示 0Xffffffff) </span><br><span class="line">                    1111 1111 1111 1111   #char 只保留 16 位；10进制为 65535</span><br><span class="line">0000 0000 0000 0000 1111 1111 1111 1111   #再转换成 int 执行零扩展；10进制同样为 65535</span><br></pre></td></tr></table></figure>
+
+<h1 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h1><p>溢出</p>
+<p>符号扩展与零扩展</p>
+<p>循环进位</p>
+</div><iframe src="/donate/?AliPayQR=null&amp;WeChatQR=/img/WeChatQR.png&amp;GitHub=null&amp;BTCQR=null&amp;BTCKEY=null&amp;PayPal=https://www.paypal.me/TDonate" style="overflow-x:hidden;overflow-y:hidden; border:0xp none #fff; min-height:240px; width:100%;" frameborder="0" scrolling="no"></iframe><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="https://ahianzhang.com/2020/07/02/summary14/" data-id="ckcc545n70000ljfc2qpee73n" data-qrcode="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACHElEQVR42u3aQW4CMQwFUO5/aSp11UWB/+OhKsnLalRQmJdKlh37dovX/Xv9fP65kr8/+s6jdXvHwsDA+FhGst3ktZ7vMNkfAwPjNEYSZFv8ZM/83TAwMDCep305LN8NAwMD46qAOw+gGBgYGC3jqhD5HJAkjm+vxTEwMD6QsdYY+Jvnt/c3MDAw/j3jPl5rncS18PpwTwwMjK0ZedKWX8PlJWh+HFEgxsDA2JQxKRfzAjUJtcmhPNwBAwPjAEZ7WT8J2W2rIDoaDAyMAxhrYxZ5mToZ3Yh4GBgYhzEmgxF5gM6L5IiNgYFxGGNyf7UWfCfp4y+1OAYGxnaMvBBtS82rkIvBFwMDY1NGOwCx9ml+zdceEwYGxq6MNl1rA27b2sybCi86sRgYGBsx1krWyRBY/optLMXAwDiZsZa6JYzF0QoMDIwjGXl6l4fF9tWTb2JgYGC0yDak5i2BPLhf8L/CwMD4KEY7QtFez03u8JMrPwwMjL0ZeVoWncegqdC2SIvcFgMDYyNG++pJidsmi+3vYmBgnMBIitI2UCY/1l6oFcEXAwNjI8a9XHkLITm/yTAHBgbGOYx3NAaeJ5ftb+VpKwYGxt6MyThF8rp5SE0+xcDAOJkxD3x5ErkWjl/sj4GBgbH0PA/TEQADAwNjkN7NBy+K0IyBgXEAI7/Eb1O9tlUwuhHEwMDYlLF2Wd8OkF11ZMXMCAYGxg6MLzsC0T+qgrkIAAAAAElFTkSuQmCC" class="article-share-link">分享</a><div class="tags"><a href="/tags/%E8%A1%A5%E7%A0%81/">补码</a></div><div class="post-nav"><a href="/2020/06/25/macos-tools/" class="next">macOS 系统推荐的一些软件</a></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论 「请确保 disqus.com 可以正常加载」</button></div><script>var disqus_shortname = 'AhianZhang';
+var disqus_identifier = '2020/07/02/summary14/';
+var disqus_title = '通过一道数值转换题重温计算机补码';
+var disqus_url = 'https://ahianzhang.com/2020/07/02/summary14/';
+$('.btn_click_load').click(function() {
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+  $('.btn_click_load').css('display','none');
+});
+$.ajax({
+  url: 'https://disqus.com/next/config.json',
+  timeout: 3000,
+  type: 'GET',
+  success: (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    $('.btn_click_load').css('display','none');
+  })(),
+  error: function() {
+    $('.btn_click_load').css('display','block');
+  }
+});</script><script id="dsq-count-scr" src="//AhianZhang.disqus.com/count.js" async></script></div></div></div></div><div class="pure-u-1 pure-u-md-1-4"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/DDD/">DDD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DevOps/">DevOps</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/TDD/">TDD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XP/">XP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%8F%E8%AE%AE/">协议</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%80%BB%E7%BB%93/">总结</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%9C%E7%B4%A2/">搜索</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/ElasticSearch/" style="font-size: 15px;">ElasticSearch</a> <a href="/tags/LeetCode/" style="font-size: 15px;">LeetCode</a> <a href="/tags/%E5%B9%B3%E5%8F%B0%E6%9E%B6%E6%9E%84/" style="font-size: 15px;">平台架构</a> <a href="/tags/%E6%A6%82%E8%BF%B0/" style="font-size: 15px;">概述</a> <a href="/tags/macOS/" style="font-size: 15px;">macOS</a> <a href="/tags/%E6%A6%82%E7%8E%87%E8%AE%BA/" style="font-size: 15px;">概率论</a> <a href="/tags/%E8%AE%A1%E5%88%92/" style="font-size: 15px;">计划</a> <a href="/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/" style="font-size: 15px;">性能调优</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 15px;">设计模式</a> <a href="/tags/%E7%90%86%E8%AE%BA/" style="font-size: 15px;">理论</a> <a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 15px;">面向对象</a> <a href="/tags/rabbitmq/" style="font-size: 15px;">rabbitmq</a> <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 15px;">微服务</a> <a href="/tags/rsocket/" style="font-size: 15px;">rsocket</a> <a href="/tags/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/" style="font-size: 15px;">项目总结</a> <a href="/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/" style="font-size: 15px;">年终总结</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/" style="font-size: 15px;">工作总结</a> <a href="/tags/%E6%9E%81%E9%99%90%E7%BC%96%E7%A8%8B/" style="font-size: 15px;">极限编程</a> <a href="/tags/%E5%BB%BA%E7%AB%99%E8%AE%B0%E5%BD%95/" style="font-size: 15px;">建站记录</a> <a href="/tags/%E6%8A%80%E6%9C%AF/" style="font-size: 15px;">技术</a> <a href="/tags/%E7%94%9F%E6%B4%BB%E6%80%BB%E7%BB%93/" style="font-size: 15px;">生活总结</a> <a href="/tags/nat/" style="font-size: 15px;">nat</a> <a href="/tags/%E5%88%9B%E4%B8%9A/" style="font-size: 15px;">创业</a> <a href="/tags/%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/" style="font-size: 15px;">测试工具</a> <a href="/tags/tor/" style="font-size: 15px;">tor</a> <a href="/tags/%E6%95%88%E7%8E%87/" style="font-size: 15px;">效率</a> <a href="/tags/%E8%A1%A5%E7%A0%81/" style="font-size: 15px;">补码</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/07/02/summary14/">通过一道数值转换题重温计算机补码</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/25/macos-tools/">macOS 系统推荐的一些软件</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/08/devops-01/">DevOps 实施规划（持续更新）</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/29/rabbitmq-reliability/">rabbitmq 如何提高可靠性并保证消费端幂等</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/21/rabbit-mq-basic-concept/">AMQ Model总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/26/pair-programming/">结对编程</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/10/rsocket-intro/">RSocket 介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/10/08/object-oriented-mind/">面向对象的理解</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/architecture-framework/">企业平台技术框架</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/27/summary13/">对创业的思考</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-comment-o"> 最近评论</i></div><script type="text/javascript" src="//AhianZhang.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://hacpai.com/" title="黑客派" target="_blank">黑客派</a><ul></ul><a href="https://www.coolshell.cn/" title="酷壳" target="_blank">酷壳</a><ul></ul><a href="http://www.hankcs.com/" title="hankcs" target="_blank">hankcs</a><ul></ul><a href="https://taohuawu.club" title="潘少的 BLOG" target="_blank">潘少的 BLOG</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">象帝浮华生.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?6d760d826594895392280c40a0cdd834";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
