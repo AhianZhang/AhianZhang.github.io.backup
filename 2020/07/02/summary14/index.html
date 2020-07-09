@@ -42,7 +42,7 @@ ga('create','UA-151513812-1','auto');ga('send','pageview');</script><meta name="
 
 
 <h1 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h1><p>上面的问题可以拆分成下面的代码便于分析</p>
-<p>![image-20200707094407456](/Users/ahianzhang/Library/Application Support/typora-user-images/image-20200707094407456.png)</p>
+<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-07-09-075147.png" alt="image-20200707094407456"></p>
 <p>int(32-bit) 转 char(16-bit) 会失去精度 </p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1000 0000 0000 0000 0000 0000 0000 0001   #int -1 的原码</span><br><span class="line">1111 1111 1111 1111 1111 1111 1111 1111   #int -1 的补码(内存中的数值用补码表示 0Xffffffff) </span><br><span class="line">                    1111 1111 1111 1111   #char 只保留 16 位；10进制为 65535</span><br><span class="line">0000 0000 0000 0000 1111 1111 1111 1111   #再转换成 int 执行零扩展；10进制同样为 65535</span><br></pre></td></tr></table></figure>
 
