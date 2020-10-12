@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://ahianzhang.com/"/>
-  <updated>2020-07-09T07:51:51.569Z</updated>
+  <updated>2020-10-12T02:09:25.703Z</updated>
   <id>https://ahianzhang.com/</id>
   
   <author>
@@ -17,21 +17,40 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>电商搜索数据同步方案</title>
+    <link href="https://ahianzhang.com/2020/10/10/change-data-capture/"/>
+    <id>https://ahianzhang.com/2020/10/10/change-data-capture/</id>
+    <published>2020-10-10T02:36:07.000Z</published>
+    <updated>2020-10-12T02:09:25.703Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>搜索系统主要分为两个部分一个是在线服务、一个是离线服务，在线服务是指排序、打分等靠近用户侧的部分，离线服务负责这篇文章属于离线部分范畴，本篇文章只是提供一个基础的思路，实际使用还需要适当调整和拓展。无论哪种方式都应该保证全量高吞吐、增量低延时的这个原则。</p><h1 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h1><h2 id="定时任务主动拉取更新"><a href="#定时任务主动拉取更新" class="headerlink" title="定时任务主动拉取更新"></a>定时任务主动拉取更新</h2><p>这个方案是最简单最直观的实现方式，通过 SQL 关联查询，全量更新和增量更新通过定时任务去触发。</p><p>优点：适合快速开发，且与业务系统代码解耦。</p><p>缺点：对数据库压力较大；如果跨数据库关联会增加复杂度；实时性低。</p><p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-10-10-070844.png" alt="image-20201010150842337"></p><h2 id="订阅队列异步更新"><a href="#订阅队列异步更新" class="headerlink" title="订阅队列异步更新"></a>订阅队列异步更新</h2><p>异步更新常出现在事件驱动的架构中，扣件库存事件、价格变更事件、商品上下架事件等，这种方案需要分布式队列的支持。</p><p>优点：实时性高，对数据库压力小。</p><p>缺点：需要保证消息的消息队列的可靠性、顺序消费、重复消费等；对非事件驱动架构的业务代码有入侵性。</p><p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-10-10-090117.png" alt="image-20201010170115099"></p><p>说明：上图中 product id 是从消息队列拿到变更的商品 id，然后根据 id 去反查业务库中的数据；data 是通过 SQL 拿到的结构化数据，这个步骤在全量更新时也会用到。</p><h2 id="使用-Binlog-工具更新"><a href="#使用-Binlog-工具更新" class="headerlink" title="使用 Binlog 工具更新"></a>使用 Binlog 工具更新</h2><p>Binlog 是 MysQL 中最重要的日志，它记录了 DDL 和 DML 操作，在 MySQL 主从复制或者数据恢复时会使用到，当然也可以用在同步数据上，由于 Binlog 是二进制文件无法直接使用，市面上有很多成熟的<a href="https://github.com/wushujames/mysql-cdc-projects/wiki" target="_blank" rel="noopener">解析工具</a>，目前 Canal 是比较适合国内的业务场景。</p><p>优点：与业务系统解耦</p><p>缺点：需要引入消息队列和 Binlog 解析中间件，增加了架构的复杂性</p><p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-10-12-014017.png" alt="image-20201012094015040"></p><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>上面介绍了搜索的三种数据同步方案，使用者需要根据实际的业务场景进行选择和拓展。</p><p>监听 Binlog 这种设计在搜索系统中的使用场景仅限于数据的增量同步，这样能够做到准实时更新，而对于同步更新则需要进行周期性的通过 SQL 或者接口进行更新。</p><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p><a href="https://insights.thoughtworks.cn/application-of-cdc-in-microservices/" target="_blank" rel="noopener">https://insights.thoughtworks.cn/application-of-cdc-in-microservices/</a></p><p><a href="https://github.com/wushujames/mysql-cdc-projects/wiki" target="_blank" rel="noopener">https://github.com/wushujames/mysql-cdc-projects/wiki</a></p><p><a href="https://www.cnblogs.com/binghe001/p/13415987.html" target="_blank" rel="noopener">https://www.cnblogs.com/binghe001/p/13415987.html</a></p>]]></content>
+    
+    <summary type="html">
+    
+      搜索系统的元数据管理是最基础的部分，本文会讲到如何将变更的业务数据同步到搜索中
+    
+    </summary>
+    
+    
+      <category term="搜索" scheme="https://ahianzhang.com/categories/%E6%90%9C%E7%B4%A2/"/>
+    
+    
+      <category term="方案" scheme="https://ahianzhang.com/tags/%E6%96%B9%E6%A1%88/"/>
+    
+  </entry>
+  
+  <entry>
     <title>通过一道数值转换题重温计算机补码</title>
     <link href="https://ahianzhang.com/2020/07/02/summary14/"/>
     <id>https://ahianzhang.com/2020/07/02/summary14/</id>
     <published>2020-07-02T02:56:53.000Z</published>
-    <updated>2020-07-09T07:51:51.569Z</updated>
+    <updated>2020-10-10T02:41:44.865Z</updated>
     
     <content type="html"><![CDATA[<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>昨天同事和我聊了他偶然间看到的一道面试题，引出了后面的深入分析。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(Integer.valueOf((<span class="keyword">char</span>)-<span class="number">1</span>)); <span class="comment">//output: 65535</span></span><br></pre></td></tr></table></figure><p>为什么输出是 65535 而不是 -1 呢？</p><h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>先回顾一下计算机相关的知识点：</p><p>原码(True form)</p><blockquote><p>原码是指一个<a href="https://zh.wikipedia.org/wiki/二进制" target="_blank" rel="noopener">二进制</a>数左边加上符号位后所得到的码，且当二进制数大于0时，符号位为0；二进制数小于0时，符号位为1；二进制数等于0时，符号位可以为0或1(+0/-0)。 –维基百科</p></blockquote><p>原码根据符号位能很直观的看出是正数还是负数，但是对于计算机运算来说却不是那么好用了，比如：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 求解: 1 + (-1) </span></span><br><span class="line">---</span><br><span class="line">站在人类的视角会立马得出 1 + (-1) = 0 的结论</span><br><span class="line">---</span><br><span class="line">而计算机的角度(假设长度是8-bit)：</span><br><span class="line">转换成二进制并相加：</span><br><span class="line">  00000001</span><br><span class="line">+ 10000001</span><br><span class="line"> ----------</span><br><span class="line">  10000010</span><br><span class="line"> </span><br><span class="line">这个结果是：-2，与正确值不符</span><br></pre></td></tr></table></figure><p>所以如果有负数使用了原码运算，那还得把符号位撇开，这就增加了使用成本，为了解决这个问题就出现了反码。</p><hr><p>反码(ones’ complement)，也叫<strong>一的补码</strong></p><blockquote><p>将<a href="https://zh.wikipedia.org/wiki/二进制" target="_blank" rel="noopener">二进制</a>数每个数字反转，得到的数即为原二进制的<strong>一的补码</strong>（英语：ones’ complement）。若某一位为0，则使其变为1，反之亦然。</p><ul><li>一的补码以有符号比特的二进制数定义。</li><li>一的补码是有符号比特的二进制数。</li><li>正数和0的一的补码就是该数字本身。–维基百科</li></ul></blockquote><p>反码能解决负数运算的问题吗，可以，但是又会出现<strong>负零</strong>和<strong>循环进位</strong>的问题。举例：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 求解  1 + (-1)</span></span><br><span class="line">---</span><br><span class="line">转换成二进制并取反相加</span><br><span class="line">  00000001 (正数的反码是它本身)</span><br><span class="line">+ 11111110 (符号位不变其余取反)</span><br><span class="line">------------</span><br><span class="line">  11111111 </span><br><span class="line">转换成原码为：100000000 = -0</span><br></pre></td></tr></table></figure><p>对于 0 来说正负并没有意义, 而且还会有反码 0000 0000 和 1111 1111 这两种 0 的表现形式，在使用反码运算时判断是否为 0 还需要考虑这两种情况，为了解决这个问题就又出现了补码。</p><hr><p>补码(2’s complement)</p><blockquote><p>正数和0的补码就是该数字本身。负数的补码则是将其对应正数按位取反再加1。</p><p>补码系统的最大优点是可以在<a href="https://zh.wikipedia.org/wiki/加法" target="_blank" rel="noopener">加法</a>或<a href="https://zh.wikipedia.org/wiki/減法" target="_blank" rel="noopener">减法</a>处理中，不需因为数字的正负而使用不同的计算方式。只要一种加法电路就可以处理各种有号数加法，而且减法可以用一个数加上另一个数的补码来表示，因此只要有加法电路及补码电路即可完成各种有号数加法及减法，在电路设计上相当方便。</p><p>另外，补码系统的0就只有一个表示方式，这和<a href="https://zh.wikipedia.org/wiki/一補數" target="_blank" rel="noopener">反码</a>系统不同（在反码系统中，0有二种表示方式），因此在判断数字是否为0时，只要比较一次即可  –维基百科</p></blockquote><p>补码有一个原则：<strong>数字a的补码为 -a</strong>，举例：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> a = -5,那么 a 的补码为 5</span></span><br><span class="line">10000101  # -5 的原码</span><br><span class="line">11111010  # -5 的反码</span><br><span class="line">11111011  # -5 的补码</span><br></pre></td></tr></table></figure><h1 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h1><p>上面的问题可以拆分成下面的代码便于分析</p><p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/2020-07-09-075147.png" alt="image-20200707094407456"></p><p>int(32-bit) 转 char(16-bit) 会失去精度 </p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1000 0000 0000 0000 0000 0000 0000 0001   #int -1 的原码</span><br><span class="line">1111 1111 1111 1111 1111 1111 1111 1111   #int -1 的补码(内存中的数值用补码表示 0Xffffffff) </span><br><span class="line">                    1111 1111 1111 1111   #char 只保留 16 位；10进制为 65535</span><br><span class="line">0000 0000 0000 0000 1111 1111 1111 1111   #再转换成 int 执行零扩展；10进制同样为 65535</span><br></pre></td></tr></table></figure><h1 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h1><p>溢出</p><p>符号扩展与零扩展</p><p>循环进位</p>]]></content>
     
     <summary type="html">
     
-      
-      
-        &lt;h1 id=&quot;问题&quot;&gt;&lt;a href=&quot;#问题&quot; class=&quot;headerlink&quot; title=&quot;问题&quot;&gt;&lt;/a&gt;问题&lt;/h1&gt;&lt;p&gt;昨天同事和我聊了他偶然间看到的一道面试题，引出了后面的深入分析。&lt;/p&gt;
-&lt;figure class=&quot;highlight java&quot;&gt;&lt;t
-      
+      涉及到源码、反码、补码
     
     </summary>
     
@@ -452,29 +471,6 @@
     
     
       <category term="os" scheme="https://ahianzhang.com/tags/os/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>leetcode206</title>
-    <link href="https://ahianzhang.com/2019/05/30/leetcode206/"/>
-    <id>https://ahianzhang.com/2019/05/30/leetcode206/</id>
-    <published>2019-05-30T01:43:49.000Z</published>
-    <updated>2020-07-08T01:17:50.441Z</updated>
-    
-    <content type="html"><![CDATA[<p><img src="https://ahian-blog.oss-cn-beijing.aliyuncs.com/images/Paper.Paper%20%E5%B7%A5%E5%85%B7.21.PNG" alt=""></p><p><strong>Consideration</strong> </p><ul><li>make three pointers , pre,current,next;</li><li>initial pre as null</li><li>use tmp to save current’s next node info</li><li>change current’s next to link pre node(first is null)</li><li>move pre pointer to next node</li><li>move current pointer to next node</li></ul><p><strong>soultion</strong></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * public class ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) &#123; val = x; &#125;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ListNode <span class="title">reverseList</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">     ListNode pre = <span class="keyword">null</span>;</span><br><span class="line">        ListNode current = head;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (current != <span class="keyword">null</span>)&#123;</span><br><span class="line"></span><br><span class="line">            ListNode next = current.next;</span><br><span class="line">            current.next = pre;</span><br><span class="line">            pre = current;</span><br><span class="line">            current = next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pre;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      单链表反转，借助三个指针操作
-    
-    </summary>
-    
-    
-      <category term="算法" scheme="https://ahianzhang.com/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="LeetCode" scheme="https://ahianzhang.com/tags/LeetCode/"/>
     
   </entry>
   
