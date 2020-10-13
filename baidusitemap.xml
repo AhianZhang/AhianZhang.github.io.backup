@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://ahianzhang.com/2020/10/13/spring-cloud-intergration/</loc>
+    <lastmod>2020-10-13</lastmod>
+  </url>  <url>
     <loc>https://ahianzhang.com/2020/10/10/change-data-capture/</loc>
     <lastmod>2020-10-12</lastmod>
   </url>  <url>

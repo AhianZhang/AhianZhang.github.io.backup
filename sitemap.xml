@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ahianzhang.com/2020/10/13/spring-cloud-intergration/</loc>
+    
+    <lastmod>2020-10-13T14:47:36.808Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://ahianzhang.com/2020/10/10/change-data-capture/</loc>
     
     <lastmod>2020-10-12T02:09:25.703Z</lastmod>
