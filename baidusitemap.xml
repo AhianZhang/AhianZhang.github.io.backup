@@ -16,6 +16,9 @@
     <loc>https://ahianzhang.com/2020/06/25/macos-tools/</loc>
     <lastmod>2020-07-14</lastmod>
   </url>  <url>
+    <loc>https://ahianzhang.com/2020/03/21/rabbit-mq-basic-concept/</loc>
+    <lastmod>2020-07-08</lastmod>
+  </url>  <url>
     <loc>https://ahianzhang.com/2018/03/25/code01/</loc>
     <lastmod>2020-07-08</lastmod>
   </url>  <url>
@@ -45,9 +48,6 @@
   </url>  <url>
     <loc>https://ahianzhang.com/2020/03/29/rabbitmq-reliability/</loc>
     <lastmod>2020-03-29</lastmod>
-  </url>  <url>
-    <loc>https://ahianzhang.com/2020/03/21/rabbit-mq-basic-concept/</loc>
-    <lastmod>2020-03-24</lastmod>
   </url>  <url>
     <loc>https://ahianzhang.com/2019/12/26/pair-programming/</loc>
     <lastmod>2019-12-26</lastmod>
@@ -130,16 +130,10 @@
     <loc>https://ahianzhang.com/2018/12/31/summary09/</loc>
     <lastmod>2019-05-27</lastmod>
   </url>  <url>
-    <loc>https://ahianzhang.com/2018/01/30/summary04/</loc>
-    <lastmod>2019-05-06</lastmod>
-  </url>  <url>
-    <loc>https://ahianzhang.com/2018/01/30/summary02/</loc>
-    <lastmod>2019-05-06</lastmod>
-  </url>  <url>
     <loc>https://ahianzhang.com/2018/01/29/summary01/</loc>
     <lastmod>2019-05-06</lastmod>
   </url>  <url>
-    <loc>https://ahianzhang.com/2018/08/20/summary07/</loc>
+    <loc>https://ahianzhang.com/2018/01/30/summary02/</loc>
     <lastmod>2019-05-06</lastmod>
   </url>  <url>
     <loc>https://ahianzhang.com/2018/02/11/summary05/</loc>
@@ -148,7 +142,13 @@
     <loc>https://ahianzhang.com/2018/01/30/summary03/</loc>
     <lastmod>2019-05-06</lastmod>
   </url>  <url>
+    <loc>https://ahianzhang.com/2018/01/30/summary04/</loc>
+    <lastmod>2019-05-06</lastmod>
+  </url>  <url>
     <loc>https://ahianzhang.com/2018/08/04/summary06/</loc>
+    <lastmod>2019-05-06</lastmod>
+  </url>  <url>
+    <loc>https://ahianzhang.com/2018/08/20/summary07/</loc>
     <lastmod>2019-05-06</lastmod>
   </url>  <url>
     <loc>https://ahianzhang.com/2018/11/20/summary08/</loc>
